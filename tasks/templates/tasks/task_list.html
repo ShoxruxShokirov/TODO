@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App - Task Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-container {
+            padding: 2rem 0;
+        }
+
+        .todo-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 2.5rem;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .header-section h1 {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .task-form {
+            margin-bottom: 2rem;
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 2px dashed #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        .task-form:focus-within {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            color: white;
+        }
+
+        .search-box {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #dee2e6;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+        }
+
+        .task-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.3s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .task-item.completed {
+            opacity: 0.7;
+            background: #f8f9fa;
+        }
+
+        .task-item.completed .task-title {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+
+        .task-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #212529;
+            margin-bottom: 0.5rem;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.75rem;
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-low { background: #d4edda; color: #155724; }
+        .priority-medium { background: #fff3cd; color: #856404; }
+        .priority-high { background: #f8d7da; color: #721c24; }
+
+        .due-date {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .due-date.overdue {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-action:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-complete {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-complete:hover {
+            background: #218838;
+        }
+
+        .btn-edit {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #138496;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 2px solid #6c757d;
+            color: #6c757d;
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #6c757d;
+            color: white;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .alert {
+            border-radius: 15px;
+            border: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container main-container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="todo-card">
+                    <div class="header-section">
+                        <h1><i class="fas fa-tasks"></i> My Tasks</h1>
+                        <div class="user-info">
+                            <i class="fas fa-user"></i> {{ user.username }} | 
+                            <a href="{% url 'logout' %}" class="logout-btn btn btn-sm">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" action="{% url 'task_create' %}" class="task-form">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {{ form.title }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.priority }}
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-plus"></i> Add Task
+                                </button>
+                            </div>
+                            <div class="col-12">
+                                {{ form.description }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.due_date }}
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="search-box">
+                        <form method="get" class="d-flex gap-2">
+                            <input type="text" name="search" class="form-control search-input" 
+                                   placeholder="Search tasks..." value="{{ search_query }}">
+                            <input type="hidden" name="filter" value="{{ filter_type }}">
+                            <input type="hidden" name="sort" value="{{ sort_type }}">
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="filter-buttons">
+                        <a href="?filter=all{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="btn filter-btn {% if filter_type == 'all' %}active{% endif %}">
+                            <i class="fas fa-list"></i> All
+                        </a>
+                        <a href="?filter=active{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="btn filter-btn {% if filter_type == 'active' %}active{% endif %}">
+                            <i class="fas fa-clock"></i> Active
+                        </a>
+                        <a href="?filter=completed{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="btn filter-btn {% if filter_type == 'completed' %}active{% endif %}">
+                            <i class="fas fa-check"></i> Completed
+                        </a>
+                        <select name="sort" class="form-select filter-btn" style="width: auto;" 
+                                onchange="window.location.href=this.value">
+                            <option value="?sort=created{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                                    {% if sort_type == 'created' %}selected{% endif %}>Sort by Date</option>
+                            <option value="?sort=priority{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                                    {% if sort_type == 'priority' %}selected{% endif %}>Sort by Priority</option>
+                            <option value="?sort=due_date{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                                    {% if sort_type == 'due_date' %}selected{% endif %}>Sort by Due Date</option>
+                        </select>
+                    </div>
+
+                    {% if tasks %}
+                        <div class="stats-card">
+                            <div class="stats-number">{{ tasks|length }}</div>
+                            <small class="text-muted">Task{{ tasks|length|pluralize }}</small>
+                        </div>
+                    {% endif %}
+
+                    <div class="task-list">
+                        {% for task in tasks %}
+                            <div class="task-item {% if task.completed %}completed{% endif %}">
+                                <div class="task-title">
+                                    {{ task.title }}
+                                </div>
+                                {% if task.description %}
+                                    <div class="text-muted mb-2" style="font-size: 0.9rem;">
+                                        {{ task.description|truncatewords:20 }}
+                                    </div>
+                                {% endif %}
+                                <div class="task-meta">
+                                    <span class="priority-badge priority-{{ task.priority }}">
+                                        <i class="fas fa-flag"></i> {{ task.get_priority_display }}
+                                    </span>
+                                    {% if task.due_date %}
+                                        <span class="due-date {% if task.is_overdue %}overdue{% endif %}">
+                                            <i class="fas fa-calendar"></i> 
+                                            {{ task.due_date|date:"M d, Y H:i" }}
+                                            {% if task.is_overdue %} (Overdue){% endif %}
+                                        </span>
+                                    {% endif %}
+                                    <span class="text-muted" style="font-size: 0.85rem;">
+                                        <i class="fas fa-clock"></i> {{ task.created_at|date:"M d, Y" }}
+                                    </span>
+                                </div>
+                                <div class="task-actions">
+                                    <form method="post" action="{% url 'toggle_task' task.id %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-action btn-complete">
+                                            <i class="fas fa-{{ task.completed|yesno:'undo,check' }}"></i>
+                                            {{ task.completed|yesno:"Undo,Complete" }}
+                                        </button>
+                                    </form>
+                                    <a href="{% url 'task_edit' task.pk %}" class="btn btn-action btn-edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <form method="post" action="{% url 'task_delete' task.pk %}" style="display: inline;" 
+                                          onsubmit="return confirm('Are you sure you want to delete this task?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-action btn-delete">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="empty-state">
+                                <i class="fas fa-clipboard-list"></i>
+                                <h4>No tasks found</h4>
+                                <p>Start by adding a new task above</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
