@@ -8,15 +8,44 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
+            /* Light theme colors */
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --success-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #e9ecef;
+            --bg-secondary: #f8f9fa;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --task-bg: #ffffff;
+            --stat-bg: #f8f9fa;
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme colors */
+            --primary-gradient: linear-gradient(135deg, #7c8aff 0%, #a855f7 100%);
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --card-bg: rgba(30, 30, 46, 0.95);
+            --text-primary: #e4e4e7;
+            --text-secondary: #a1a1aa;
+            --border-color: #3f3f46;
+            --bg-secondary: #27272a;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --task-bg: #27272a;
+            --stat-bg: #1f1f23;
+        }
+
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
         body {
             background: var(--bg-gradient);
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-primary);
         }
 
         .main-container {
@@ -24,12 +53,13 @@
         }
 
         .todo-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px var(--shadow);
             padding: 2.5rem;
             animation: slideUp 0.5s ease-out;
+            border: 1px solid var(--border-color);
         }
 
         @keyframes slideUp {
@@ -43,11 +73,39 @@
             }
         }
 
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .theme-toggle i {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
         .header-section {
             text-align: center;
             margin-bottom: 2.5rem;
             padding-bottom: 1.5rem;
-            border-bottom: 2px solid #e9ecef;
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
         }
 
         .header-section h1 {
@@ -56,33 +114,52 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             font-weight: 700;
-            font-size: 2.5rem;
+            font-size: 2.75rem;
             margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
         }
 
         .user-info {
-            color: #6c757d;
-            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .task-form {
             margin-bottom: 2rem;
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 15px;
-            border: 2px dashed #dee2e6;
+            background: var(--bg-secondary);
+            padding: 1.75rem;
+            border-radius: 16px;
+            border: 2px dashed var(--border-color);
             transition: all 0.3s ease;
         }
 
         .task-form:focus-within {
             border-color: #667eea;
-            background: white;
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+            background: var(--task-bg);
+            box-shadow: 0 8px 25px var(--shadow-light);
+            border-style: solid;
+        }
+
+        .form-control, .form-select {
+            background: var(--task-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
         }
 
         .form-control:focus, .form-select:focus {
+            background: var(--task-bg);
             border-color: #667eea;
+            color: var(--text-primary);
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
         }
 
         .btn-primary {
@@ -90,13 +167,14 @@
             border: none;
             padding: 0.75rem 2rem;
             font-weight: 600;
-            border-radius: 10px;
+            border-radius: 12px;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
 
         .filter-buttons {
@@ -109,16 +187,25 @@
 
         .filter-btn {
             border-radius: 25px;
-            padding: 0.5rem 1.5rem;
+            padding: 0.6rem 1.5rem;
             font-weight: 500;
             transition: all 0.3s ease;
-            border: 2px solid;
+            border: 2px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+            background: var(--task-bg);
+            transform: translateY(-2px);
         }
 
         .filter-btn.active {
             background: var(--primary-gradient);
             border-color: transparent;
             color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .search-box {
@@ -128,194 +215,43 @@
         .search-input {
             border-radius: 25px;
             padding: 0.75rem 1.5rem;
-            border: 2px solid #dee2e6;
+            border: 2px solid var(--border-color);
+            background: var(--task-bg);
+            color: var(--text-primary);
         }
 
         .search-input:focus {
             border-color: #667eea;
-        }
-
-        .task-item {
-            background: white;
-            border: 2px solid #e9ecef;
-            border-radius: 15px;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
-            animation: fadeIn 0.3s ease-out;
-            position: relative;
-            overflow: hidden;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .task-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            border-color: #667eea;
-        }
-
-        .task-item.completed {
-            opacity: 0.7;
-            background: #f8f9fa;
-        }
-
-        .task-item.completed .task-title {
-            text-decoration: line-through;
-            color: #6c757d;
-        }
-
-        .task-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #212529;
-            margin-bottom: 0.5rem;
-        }
-
-        .task-meta {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 0.75rem;
-        }
-
-        .priority-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .priority-low { background: #d4edda; color: #155724; }
-        .priority-medium { background: #fff3cd; color: #856404; }
-        .priority-high { background: #f8d7da; color: #721c24; }
-
-        .due-date {
-            font-size: 0.85rem;
-            color: #6c757d;
-        }
-
-        .due-date.overdue {
-            color: #dc3545;
-            font-weight: 600;
-        }
-
-        .task-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-action {
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: none;
-        }
-
-        .btn-action:hover {
-            transform: scale(1.05);
-        }
-
-        .btn-complete {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-complete:hover {
-            background: #218838;
-        }
-
-        .btn-edit {
-            background: #17a2b8;
-            color: white;
-        }
-
-        .btn-edit:hover {
-            background: #138496;
-        }
-
-        .btn-delete {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-delete:hover {
-            background: #c82333;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 20px;
-            border: 3px dashed #dee2e6;
-            margin: 2rem 0;
-        }
-
-        .empty-state i {
-            font-size: 5rem;
-            margin-bottom: 1.5rem;
-            opacity: 0.4;
-            color: #667eea;
-        }
-
-        .empty-state h4 {
-            color: #495057;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .empty-state p {
-            color: #6c757d;
-            font-size: 1.1rem;
-        }
-
-        .logout-btn {
-            background: transparent;
-            border: 2px solid #6c757d;
-            color: #6c757d;
-            border-radius: 25px;
-            padding: 0.5rem 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            background: #6c757d;
-            color: white;
+            background: var(--task-bg);
+            color: var(--text-primary);
         }
 
         .stats-container {
-            background: #f8f9fa;
-            border-radius: 15px;
+            background: var(--stat-bg);
+            border-radius: 16px;
             padding: 1.5rem;
-            border: 2px solid #e9ecef;
+            border: 2px solid var(--border-color);
+            margin-bottom: 2rem;
         }
 
         .stat-card {
-            background: white;
-            border-radius: 12px;
+            background: var(--task-bg);
+            border-radius: 16px;
             padding: 1.5rem;
             text-align: center;
-            border: 2px solid #e9ecef;
+            border: 2px solid var(--border-color);
             transition: all 0.3s ease;
             height: 100%;
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px var(--shadow-light);
             border-color: #667eea;
         }
 
         .stat-icon {
-            font-size: 2rem;
+            font-size: 2.25rem;
             margin-bottom: 0.5rem;
             color: #667eea;
         }
@@ -333,36 +269,220 @@
         }
 
         .stat-value {
-            font-size: 2rem;
+            font-size: 2.25rem;
             font-weight: 700;
-            color: #212529;
+            color: var(--text-primary);
             margin-bottom: 0.25rem;
         }
 
         .stat-label {
             font-size: 0.85rem;
-            color: #6c757d;
+            color: var(--text-secondary);
             text-transform: uppercase;
             font-weight: 600;
             letter-spacing: 0.5px;
         }
 
         .progress-container {
-            background: white;
-            border-radius: 12px;
+            background: var(--task-bg);
+            border-radius: 16px;
             padding: 1.5rem;
-            border: 2px solid #e9ecef;
+            border: 2px solid var(--border-color);
+            margin-top: 1rem;
         }
 
         .progress-label {
             font-weight: 600;
-            color: #212529;
+            color: var(--text-primary);
         }
 
         .progress-percentage {
             font-weight: 700;
             color: #667eea;
             font-size: 1.1rem;
+        }
+
+        .progress {
+            background: var(--bg-secondary);
+            height: 28px;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--primary-gradient);
+            border-radius: 14px;
+        }
+
+        .task-item {
+            background: var(--task-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.3s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px var(--shadow-light);
+            border-color: #667eea;
+        }
+
+        .task-item.completed {
+            opacity: 0.7;
+            background: var(--bg-secondary);
+        }
+
+        .task-item.completed .task-title {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        .task-title {
+            font-weight: 600;
+            font-size: 1.15rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.75rem;
+        }
+
+        .priority-badge {
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .priority-low { background: rgba(40, 167, 69, 0.15); color: #28a745; }
+        .priority-medium { background: rgba(255, 193, 7, 0.15); color: #ffc107; }
+        .priority-high { background: rgba(220, 53, 69, 0.15); color: #dc3545; }
+
+        .due-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .due-date.overdue {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-action:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-complete {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-complete:hover {
+            background: #218838;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-edit {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #138496;
+            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            border: 3px dashed var(--border-color);
+            margin: 2rem 0;
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.4;
+            color: #667eea;
+        }
+
+        .empty-state h4 {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background: var(--text-primary);
+            color: var(--card-bg);
+            transform: translateY(-2px);
         }
 
         .alert {
@@ -381,9 +501,24 @@
                 transform: translateY(0);
             }
         }
+
+        .btn-outline-primary {
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-gradient);
+            border-color: transparent;
+        }
     </style>
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+        <i class="fas fa-moon" id="themeIcon"></i>
+        <span id="themeText">Dark</span>
+    </button>
+
     <div class="container main-container">
         <div class="row justify-content-center">
             <div class="col-lg-10 col-xl-8">
@@ -391,7 +526,7 @@
                     <div class="header-section">
                         <h1><i class="fas fa-tasks"></i> My Tasks</h1>
                         <div class="user-info">
-                            <i class="fas fa-user"></i> {{ user.username }} | 
+                            <span><i class="fas fa-user"></i> {{ user.username }}</span>
                             <a href="{% url 'logout' %}" class="logout-btn btn btn-sm">
                                 <i class="fas fa-sign-out-alt"></i> Logout
                             </a>
@@ -456,7 +591,7 @@
                            class="btn filter-btn {% if filter_type == 'completed' %}active{% endif %}">
                             <i class="fas fa-check"></i> Completed
                         </a>
-                        <select name="sort" class="form-select filter-btn" style="width: auto;" 
+                        <select name="sort" class="form-select filter-btn" style="width: auto; display: inline-block;" 
                                 onchange="window.location.href=this.value">
                             <option value="?sort=created{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" 
                                     {% if sort_type == 'created' %}selected{% endif %}>Sort by Date</option>
@@ -468,7 +603,7 @@
                     </div>
 
                     {% if total_tasks > 0 %}
-                        <div class="stats-container mb-4">
+                        <div class="stats-container">
                             <div class="row g-3">
                                 <div class="col-md-3">
                                     <div class="stat-card">
@@ -499,15 +634,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="progress-container mt-3">
+                            <div class="progress-container">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="progress-label">Progress</span>
                                     <span class="progress-percentage">{{ progress_percentage }}%</span>
                                 </div>
-                                <div class="progress" style="height: 25px; border-radius: 15px; background: #e9ecef;">
+                                <div class="progress" style="height: 28px; border-radius: 14px;">
                                     <div class="progress-bar progress-bar-striped progress-bar-animated" 
                                          role="progressbar" 
-                                         style="width: {{ progress_percentage }}%; background: var(--primary-gradient);"
+                                         style="width: {{ progress_percentage }}%;"
                                          aria-valuenow="{{ progress_percentage }}" 
                                          aria-valuemin="0" 
                                          aria-valuemax="100">
@@ -524,7 +659,7 @@
                                     {{ task.title }}
                                 </div>
                                 {% if task.description %}
-                                    <div class="text-muted mb-2" style="font-size: 0.9rem;">
+                                    <div class="text-muted mb-2" style="font-size: 0.9rem; color: var(--text-secondary);">
                                         {{ task.description|truncatewords:20 }}
                                     </div>
                                 {% endif %}
@@ -539,7 +674,7 @@
                                             {% if task.is_overdue %} (Overdue){% endif %}
                                         </span>
                                     {% endif %}
-                                    <span class="text-muted" style="font-size: 0.85rem;">
+                                    <span style="font-size: 0.85rem; color: var(--text-secondary);">
                                         <i class="fas fa-clock"></i> {{ task.created_at|date:"M d, Y" }}
                                     </span>
                                 </div>
@@ -577,5 +712,36 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
+
+        // Load saved theme or default to light
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+                themeText.textContent = 'Dark';
+            }
+        }
+    </script>
 </body>
 </html>
