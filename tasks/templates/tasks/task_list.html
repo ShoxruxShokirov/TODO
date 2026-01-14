@@ -252,14 +252,29 @@
 
         .empty-state {
             text-align: center;
-            padding: 3rem 1rem;
-            color: #6c757d;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            border: 3px dashed #dee2e6;
+            margin: 2rem 0;
         }
 
         .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.3;
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.4;
+            color: #667eea;
+        }
+
+        .empty-state h4 {
+            color: #495057;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #6c757d;
+            font-size: 1.1rem;
         }
 
         .logout-btn {
@@ -276,22 +291,78 @@
             color: white;
         }
 
-        .stats-card {
-            background: white;
+        .stats-container {
+            background: #f8f9fa;
             border-radius: 15px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
+            padding: 1.5rem;
             border: 2px solid #e9ecef;
         }
 
-        .stats-number {
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #667eea;
+        }
+
+        .stat-completed .stat-icon {
+            color: #28a745;
+        }
+
+        .stat-active .stat-icon {
+            color: #ffc107;
+        }
+
+        .stat-overdue .stat-icon {
+            color: #dc3545;
+        }
+
+        .stat-value {
             font-size: 2rem;
             font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #212529;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid #e9ecef;
+        }
+
+        .progress-label {
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .progress-percentage {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.1rem;
         }
 
         .alert {
@@ -396,10 +467,53 @@
                         </select>
                     </div>
 
-                    {% if tasks %}
-                        <div class="stats-card">
-                            <div class="stats-number">{{ tasks|length }}</div>
-                            <small class="text-muted">Task{{ tasks|length|pluralize }}</small>
+                    {% if total_tasks > 0 %}
+                        <div class="stats-container mb-4">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+                                        <div class="stat-value">{{ total_tasks }}</div>
+                                        <div class="stat-label">Total Tasks</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-card stat-completed">
+                                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                                        <div class="stat-value">{{ completed_tasks }}</div>
+                                        <div class="stat-label">Completed</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-card stat-active">
+                                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                                        <div class="stat-value">{{ active_tasks }}</div>
+                                        <div class="stat-label">Active</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-card stat-overdue">
+                                        <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                                        <div class="stat-value">{{ overdue_tasks }}</div>
+                                        <div class="stat-label">Overdue</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="progress-container mt-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="progress-label">Progress</span>
+                                    <span class="progress-percentage">{{ progress_percentage }}%</span>
+                                </div>
+                                <div class="progress" style="height: 25px; border-radius: 15px; background: #e9ecef;">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         role="progressbar" 
+                                         style="width: {{ progress_percentage }}%; background: var(--primary-gradient);"
+                                         aria-valuenow="{{ progress_percentage }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     {% endif %}
 

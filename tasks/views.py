@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
+from django.utils import timezone
 from .models import Task
 from .forms import TaskForm, RegisterForm
 
@@ -59,6 +60,23 @@ class TaskListView(LoginRequiredMixin, ListView):
         context['filter_type'] = self.request.GET.get('filter', 'all')
         context['search_query'] = self.request.GET.get('search', '')
         context['sort_type'] = self.request.GET.get('sort', 'created')
+        
+        # Statistics for progress bar
+        all_tasks = Task.objects.filter(user=self.request.user)
+        context['total_tasks'] = all_tasks.count()
+        context['completed_tasks'] = all_tasks.filter(completed=True).count()
+        context['active_tasks'] = all_tasks.filter(completed=False).count()
+        context['overdue_tasks'] = all_tasks.filter(
+            completed=False,
+            due_date__lt=timezone.now()
+        ).count()
+        
+        # Calculate progress percentage
+        if context['total_tasks'] > 0:
+            context['progress_percentage'] = int((context['completed_tasks'] / context['total_tasks']) * 100)
+        else:
+            context['progress_percentage'] = 0
+        
         return context
 
 
