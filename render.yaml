@@ -2,7 +2,7 @@ services:
   - type: web
     name: django-todo-app
     env: python
-    buildCommand: pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --noinput
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt && python manage.py migrate --noinput && python manage.py collectstatic --noinput
     startCommand: gunicorn todo_project.wsgi:application
     envVars:
       - key: SECRET_KEY

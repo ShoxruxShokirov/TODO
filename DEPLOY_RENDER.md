@@ -46,7 +46,7 @@
    - **Branch:** `main`
    - **Root Directory:** (leave empty)
    - **Environment:** `Python 3`
-   - **Build Command:** `pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --noinput`
+   - **Build Command:** `pip install --upgrade pip && pip install -r requirements.txt && python manage.py migrate --noinput && python manage.py collectstatic --noinput`
    - **Start Command:** `gunicorn todo_project.wsgi:application`
 
 4. **Add Environment Variables:**
