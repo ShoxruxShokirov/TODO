@@ -35,5 +35,11 @@ def json_data(value):
     Returns:
         str: JSON string (marked as safe for template)
     """
-    return mark_safe(json.dumps(value))
+    if value is None:
+        return mark_safe('[]')
+    try:
+        return mark_safe(json.dumps(value))
+    except (TypeError, ValueError) as e:
+        # Return empty array if serialization fails
+        return mark_safe('[]')
 

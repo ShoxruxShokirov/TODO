@@ -175,31 +175,62 @@ class TaskListView(LoginRequiredMixin, ListView):
             ).count()
             
             # Monthly statistics (last 6 months)
+            from calendar import monthrange
             monthly_data = []
+            now = timezone.now()
             for i in range(6):
-                month_start = timezone.now().replace(day=1) - timedelta(days=30*i)
-                month_end = (month_start + timedelta(days=32)).replace(day=1) - timedelta(days=1)
-                monthly_tasks = all_tasks.filter(created_at__range=[month_start, month_end]).count()
-                monthly_data.append({
-                    'month': month_start.strftime('%b %Y'),
-                    'count': monthly_tasks
-                })
+                try:
+                    # Calculate month start and end properly
+                    target_date = now - timedelta(days=30*i)
+                    month_start = target_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+                    # Get last day of month
+                    last_day = monthrange(month_start.year, month_start.month)[1]
+                    month_end = month_start.replace(day=last_day, hour=23, minute=59, second=59, microsecond=999999)
+                    
+                    monthly_tasks = all_tasks.filter(created_at__range=[month_start, month_end]).count()
+                    monthly_data.append({
+                        'month': month_start.strftime('%b %Y'),
+                        'count': monthly_tasks
+                    })
+                except Exception as e:
+                    logger.warning(f"Error calculating monthly stats for month {i}: {str(e)}")
+                    monthly_data.append({
+                        'month': (now - timedelta(days=30*i)).strftime('%b %Y'),
+                        'count': 0
+                    })
             context['monthly_statistics'] = list(reversed(monthly_data))
             
             # Daily completion trend (last 7 days)
             daily_completion = []
+            now = timezone.now()
             for i in range(7):
-                day = timezone.now().date() - timedelta(days=6-i)
-                day_start = timezone.make_aware(datetime.combine(day, datetime.min.time()))
-                day_end = timezone.make_aware(datetime.combine(day, datetime.max.time()))
-                day_completed = all_tasks.filter(
-                    completed=True,
-                    updated_at__range=[day_start, day_end]
-                ).count()
-                daily_completion.append({
-                    'day': day.strftime('%d %b'),
-                    'count': day_completed
-                })
+                try:
+                    day = (now - timedelta(days=6-i)).date()
+                    # Create start and end of day in current timezone
+                    day_start = timezone.make_aware(datetime.combine(day, datetime.min.time()))
+                    day_end = timezone.make_aware(datetime.combine(day, datetime.max.time()))
+                    
+                    # Ensure datetime objects are timezone-aware
+                    if timezone.is_naive(day_start):
+                        day_start = timezone.make_aware(day_start)
+                    if timezone.is_naive(day_end):
+                        day_end = timezone.make_aware(day_end)
+                    
+                    day_completed = all_tasks.filter(
+                        completed=True,
+                        updated_at__gte=day_start,
+                        updated_at__lte=day_end
+                    ).count()
+                    daily_completion.append({
+                        'day': day.strftime('%d %b'),
+                        'count': day_completed
+                    })
+                except Exception as e:
+                    logger.warning(f"Error calculating daily completion for day {i}: {str(e)}")
+                    daily_completion.append({
+                        'day': (now - timedelta(days=6-i)).strftime('%d %b'),
+                        'count': 0
+                    })
             context['daily_completion'] = daily_completion
                 
         except Exception as e:
