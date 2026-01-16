@@ -3,7 +3,7 @@ services:
     name: django-todo-app
     env: python
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --noinput
-    startCommand: python manage.py migrate --noinput && gunicorn todo_project.wsgi:application
+    startCommand: chmod +x render_start.sh && bash render_start.sh
     envVars:
       - key: SECRET_KEY
         generateValue: true
