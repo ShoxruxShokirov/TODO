@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from datetime import timedelta
 
 from .models import Task
 
@@ -76,9 +77,31 @@ class TaskForm(forms.ModelForm):
         help_text="Optional deadline for this task"
     )
 
+    # Lead Developer Level: Tags and color fields
+    tags = forms.CharField(
+        label="Tags",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'work, personal, urgent (comma-separated)',
+        }),
+        required=False,
+        help_text="Add tags separated by commas"
+    )
+    
+    color = forms.CharField(
+        label="Color",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'type': 'color',
+            'value': '#667eea',
+        }),
+        required=False,
+        help_text="Choose a color for this task"
+    )
+
     class Meta:
         model = Task
-        fields = ['title', 'description', 'priority', 'due_date']
+        fields = ['title', 'description', 'priority', 'due_date', 'tags', 'color']
 
     def clean_title(self):
         """Validate and sanitize title."""
@@ -102,7 +125,7 @@ class TaskForm(forms.ModelForm):
         if due_date:
             # Allow past dates (tasks can be created after due date)
             # But warn if it's too far in the past (more than 1 year)
-            if due_date < timezone.now() - timezone.timedelta(days=365):
+            if due_date < timezone.now() - timedelta(days=365):
                 raise ValidationError(_('Due date cannot be more than 1 year in the past.'))
         return due_date
 

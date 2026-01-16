@@ -125,6 +125,26 @@ class Task(models.Model):
         related_name='tasks',
         db_index=True,
     )
+    
+    # Lead Developer Level: Tags for categorization
+    tags = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="Tags",
+        help_text="Comma-separated tags (e.g., work, personal, urgent)",
+        db_index=True,
+    )
+    
+    # Lead Developer Level: Color coding
+    color = models.CharField(
+        max_length=7,
+        blank=True,
+        null=True,
+        verbose_name="Color",
+        help_text="Hex color code (e.g., #FF5733)",
+        default='',
+    )
 
     # Custom manager
     objects = TaskManager()

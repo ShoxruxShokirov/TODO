@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Login - TODO App</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -77,6 +77,75 @@
             max-width: 400px;
             animation: slideUp 0.5s ease-out;
             border: 1px solid var(--border-color);
+            margin: 1rem;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+                align-items: flex-start;
+            }
+
+            .login-card {
+                padding: 1.5rem;
+                border-radius: 20px;
+                margin: 0.5rem;
+                max-width: 100%;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+
+            .theme-toggle span {
+                display: none;
+            }
+
+            .login-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .form-control {
+                font-size: 1rem;
+                padding: 0.75rem;
+            }
+
+            .btn {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .login-card {
+                padding: 1.25rem;
+                margin: 0.25rem;
+            }
+
+            .login-header h2 {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Touch-friendly elements */
+        @media (hover: none) and (pointer: coarse) {
+            .btn,
+            .theme-toggle {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            .form-control {
+                min-height: 44px;
+            }
+
+            .btn:active {
+                transform: scale(0.98);
+            }
         }
 
         @keyframes slideUp {

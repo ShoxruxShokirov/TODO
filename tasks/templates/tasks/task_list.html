@@ -1,13 +1,16 @@
+{% load task_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Todo App - Task Manager</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        :root {
+        :root,
+        [data-theme="light"] {
             /* Light theme colors */
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -35,6 +38,66 @@
             --shadow-light: rgba(0, 0, 0, 0.3);
             --task-bg: #27272a;
             --stat-bg: #1f1f23;
+        }
+
+        [data-theme="blue"] {
+            /* Blue theme colors */
+            --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a5568;
+            --border-color: #cbd5e0;
+            --bg-secondary: #edf2f7;
+            --shadow: rgba(30, 60, 114, 0.3);
+            --shadow-light: rgba(30, 60, 114, 0.1);
+            --task-bg: #ffffff;
+            --stat-bg: #e6f3ff;
+        }
+
+        [data-theme="green"] {
+            /* Green theme colors */
+            --primary-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --bg-gradient: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --border-color: #cbd5e0;
+            --bg-secondary: #f0fff4;
+            --shadow: rgba(17, 153, 142, 0.3);
+            --shadow-light: rgba(17, 153, 142, 0.1);
+            --task-bg: #ffffff;
+            --stat-bg: #e6ffed;
+        }
+
+        [data-theme="purple"] {
+            /* Purple theme colors */
+            --primary-gradient: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            --bg-gradient: linear-gradient(135deg, #581c87 0%, #7e22ce 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --bg-secondary: #faf5ff;
+            --shadow: rgba(168, 85, 247, 0.3);
+            --shadow-light: rgba(168, 85, 247, 0.1);
+            --task-bg: #ffffff;
+            --stat-bg: #f3e8ff;
+        }
+
+        [data-theme="orange"] {
+            /* Orange theme colors */
+            --primary-gradient: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+            --bg-gradient: linear-gradient(135deg, #7c2d12 0%, #c2410c 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --border-color: #fed7aa;
+            --bg-secondary: #fff7ed;
+            --shadow: rgba(249, 115, 22, 0.3);
+            --shadow-light: rgba(249, 115, 22, 0.1);
+            --task-bg: #ffffff;
+            --stat-bg: #ffedd5;
         }
 
         * {
@@ -73,11 +136,14 @@
             }
         }
 
-        .theme-toggle {
+        .theme-selector {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 1000;
+        }
+
+        .theme-toggle {
             background: var(--card-bg);
             border: 2px solid var(--border-color);
             border-radius: 50px;
@@ -98,6 +164,46 @@
         .theme-toggle i {
             font-size: 1.2rem;
             color: var(--text-primary);
+        }
+
+        .theme-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 0.5rem;
+            box-shadow: 0 10px 40px var(--shadow);
+            min-width: 150px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .theme-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .theme-option:hover {
+            background: var(--bg-secondary);
+            transform: translateX(5px);
+        }
+
+        .theme-option i {
+            width: 20px;
+            text-align: center;
         }
 
         .header-section {
@@ -291,6 +397,37 @@
             margin-top: 1rem;
         }
 
+        .chart-card {
+            background: var(--task-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--shadow-light);
+            border-color: #667eea;
+        }
+
+        .chart-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .analytics-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+
         .progress-label {
             font-weight: 600;
             color: var(--text-primary);
@@ -324,6 +461,271 @@
             animation: fadeIn 0.3s ease-out;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .task-checkbox {
+            margin-top: 0.25rem;
+        }
+        
+        .task-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        
+        .task-content {
+            flex: 1;
+        }
+        
+        .bulk-toolbar {
+            animation: slideDown 0.3s ease-out;
+            margin-bottom: 1rem;
+        }
+        
+        .tags-badge {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+        
+        .tags-badge .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem 0;
+            }
+
+            .todo-card {
+                padding: 1.25rem;
+                border-radius: 20px;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+
+            .theme-toggle span {
+                display: none;
+            }
+
+            .header-section h1 {
+                font-size: 1.75rem;
+                margin-bottom: 1rem;
+            }
+
+            .user-info {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            .header-actions .btn-group,
+            .header-actions .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .logout-btn {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .task-form {
+                padding: 1.25rem;
+            }
+
+            .filter-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .filter-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .stats-container .row {
+                gap: 0.75rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-icon {
+                font-size: 1.5rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .task-item {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+
+            .task-checkbox {
+                align-self: flex-start;
+            }
+
+            .task-content {
+                width: 100%;
+            }
+
+            .task-title {
+                font-size: 1rem;
+            }
+
+            .task-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .task-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .task-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .btn-action {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .bulk-toolbar {
+                padding: 1rem !important;
+            }
+
+            .bulk-toolbar .btn-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .bulk-toolbar .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .search-box {
+                margin-bottom: 1rem;
+            }
+
+            .search-input {
+                font-size: 1rem;
+                padding: 0.75rem;
+            }
+
+            .dropdown-menu {
+                width: 100%;
+            }
+
+            .progress-container {
+                margin-top: 1rem;
+            }
+
+            .tags-badge {
+                width: 100%;
+            }
+
+            .empty-state {
+                padding: 2rem 1rem;
+            }
+
+            .empty-state i {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .todo-card {
+                padding: 1rem;
+                margin: 0.5rem;
+            }
+
+            .header-section h1 {
+                font-size: 1.5rem;
+            }
+
+            .theme-toggle {
+                top: 5px;
+                right: 5px;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .task-form {
+                padding: 1rem;
+            }
+
+            .stat-card {
+                padding: 0.75rem;
+            }
+
+            .form-control,
+            .form-select {
+                font-size: 1rem;
+                padding: 0.75rem;
+            }
+
+            .btn {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .modal-content {
+                margin: 1rem;
+            }
+        }
+
+        /* Touch-friendly elements */
+        @media (hover: none) and (pointer: coarse) {
+            .btn,
+            .btn-action,
+            .theme-toggle,
+            .task-select-checkbox {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            .task-item:hover {
+                transform: none;
+            }
+
+            .btn:active {
+                transform: scale(0.98);
+            }
         }
 
         @keyframes fadeIn {
@@ -514,10 +916,20 @@
     </style>
 </head>
 <body>
-    <button class="theme-toggle" id="themeToggle" title="Toggle theme">
-        <i class="fas fa-moon" id="themeIcon"></i>
-        <span id="themeText">Dark</span>
-    </button>
+    <div class="theme-selector">
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+            <i class="fas fa-palette" id="themeIcon"></i>
+            <span id="themeText">Theme</span>
+        </button>
+        <div class="theme-menu" id="themeMenu" style="display: none;">
+            <button class="theme-option" data-theme="light"><i class="fas fa-sun"></i> Light</button>
+            <button class="theme-option" data-theme="dark"><i class="fas fa-moon"></i> Dark</button>
+            <button class="theme-option" data-theme="blue"><i class="fas fa-water"></i> Blue</button>
+            <button class="theme-option" data-theme="green"><i class="fas fa-leaf"></i> Green</button>
+            <button class="theme-option" data-theme="purple"><i class="fas fa-gem"></i> Purple</button>
+            <button class="theme-option" data-theme="orange"><i class="fas fa-fire"></i> Orange</button>
+        </div>
+    </div>
 
     <div class="container main-container">
         <div class="row justify-content-center">
@@ -527,9 +939,24 @@
                         <h1><i class="fas fa-tasks"></i> My Tasks</h1>
                         <div class="user-info">
                             <span><i class="fas fa-user"></i> {{ user.username }}</span>
-                            <a href="{% url 'logout' %}" class="logout-btn btn btn-sm">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </a>
+                            <div class="header-actions">
+                                <!-- Lead Developer Level: Export/Import buttons -->
+                                <div class="btn-group me-2">
+                                    <button type="button" class="btn btn-sm btn-outline-success dropdown-toggle" data-bs-toggle="dropdown">
+                                        <i class="fas fa-download"></i> Export
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{% url 'export_tasks' 'json' %}"><i class="fas fa-file-code"></i> Export as JSON</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'export_tasks' 'csv' %}"><i class="fas fa-file-csv"></i> Export as CSV</a></li>
+                                    </ul>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-info me-2" data-bs-toggle="modal" data-bs-target="#importModal">
+                                    <i class="fas fa-upload"></i> Import
+                                </button>
+                                <a href="{% url 'logout' %}" class="logout-btn btn btn-sm">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </div>
                         </div>
                     </div>
 
@@ -560,8 +987,15 @@
                             <div class="col-12">
                                 {{ form.description }}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 {{ form.due_date }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.tags }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Color</label>
+                                {{ form.color }}
                             </div>
                         </div>
                     </form>
@@ -649,24 +1083,120 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- Lead Developer Level: Extended Analytics with Charts -->
+                            {% if total_tasks > 0 %}
+                                <div class="analytics-section mt-4">
+                                    <h3 class="mb-4" style="color: var(--text-primary); text-align: center;">
+                                        <i class="fas fa-chart-bar"></i> Analytics Dashboard
+                                    </h3>
+                                    <div class="row g-4">
+                                        <!-- Additional Stats Cards -->
+                                        <div class="col-md-4">
+                                            <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                                                <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+                                                <div class="stat-value">{{ completion_rate|floatformat:1 }}%</div>
+                                                <div class="stat-label">Completion Rate</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                                                <div class="stat-icon"><i class="fas fa-calendar-week"></i></div>
+                                                <div class="stat-value">{{ tasks_last_week }}</div>
+                                                <div class="stat-label">Tasks (Last 7 Days)</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                                                <div class="stat-icon"><i class="fas fa-check-double"></i></div>
+                                                <div class="stat-value">{{ completed_last_week }}</div>
+                                                <div class="stat-label">Completed (Last 7 Days)</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Priority Distribution Chart -->
+                                        <div class="col-md-6">
+                                            <div class="chart-card">
+                                                <h5 class="chart-title"><i class="fas fa-flag"></i> Priority Distribution</h5>
+                                                <canvas id="priorityChart" height="250"></canvas>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Daily Completion Trend -->
+                                        <div class="col-md-6">
+                                            <div class="chart-card">
+                                                <h5 class="chart-title"><i class="fas fa-chart-line"></i> Daily Completion Trend</h5>
+                                                <canvas id="dailyChart" height="250"></canvas>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Monthly Statistics -->
+                                        <div class="col-md-12">
+                                            <div class="chart-card">
+                                                <h5 class="chart-title"><i class="fas fa-calendar-alt"></i> Monthly Task Creation</h5>
+                                                <canvas id="monthlyChart" height="100"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div>
                     {% endif %}
 
+                    <!-- Lead Developer Level: Bulk operations toolbar -->
+                    <div id="bulkToolbar" class="bulk-toolbar" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center p-3 mb-3" 
+                             style="background: var(--bg-secondary); border-radius: 15px; border: 2px solid var(--border-color);">
+                            <div>
+                                <span id="selectedCount" class="badge bg-primary me-2">0 selected</span>
+                                <span class="text-muted">Choose actions:</span>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-success" onclick="bulkAction('complete')">
+                                    <i class="fas fa-check"></i> Complete
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="bulkAction('activate')">
+                                    <i class="fas fa-undo"></i> Activate
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="bulkAction('delete')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                                <button class="btn btn-sm btn-secondary" onclick="clearSelection()">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="task-list">
                         {% for task in tasks %}
-                            <div class="task-item {% if task.completed %}completed{% endif %}">
-                                <div class="task-title">
-                                    {{ task.title }}
+                            <div class="task-item {% if task.completed %}completed{% endif %}" 
+                                 style="{% if task.color %}border-left: 4px solid {{ task.color }};{% endif %}">
+                                <!-- Lead Developer Level: Bulk selection checkbox -->
+                                <div class="task-checkbox">
+                                    <input type="checkbox" class="form-check-input task-select-checkbox" 
+                                           value="{{ task.id }}" onchange="updateBulkToolbar()">
                                 </div>
-                                {% if task.description %}
-                                    <div class="text-muted mb-2" style="font-size: 0.9rem; color: var(--text-secondary);">
-                                        {{ task.description|truncatewords:20 }}
+                                <div class="task-content">
+                                    <div class="task-title">
+                                        {{ task.title }}
                                     </div>
-                                {% endif %}
-                                <div class="task-meta">
+                                    {% if task.description %}
+                                        <div class="text-muted mb-2" style="font-size: 0.9rem; color: var(--text-secondary);">
+                                            {{ task.description|truncatewords:20 }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="task-meta">
                                     <span class="priority-badge priority-{{ task.priority }}">
                                         <i class="fas fa-flag"></i> {{ task.get_priority_display }}
                                     </span>
+                                    {% if task.tags %}
+                                        <span class="tags-badge">
+                                            {% for tag in task.tags|split_tags %}
+                                                <span class="badge bg-info me-1"><i class="fas fa-tag"></i> {{ tag }}</span>
+                                            {% endfor %}
+                                        </span>
+                                    {% endif %}
                                     {% if task.due_date %}
                                         <span class="due-date {% if task.is_overdue %}overdue{% endif %}">
                                             <i class="fas fa-calendar"></i> 
@@ -677,6 +1207,7 @@
                                     <span style="font-size: 0.85rem; color: var(--text-secondary);">
                                         <i class="fas fa-clock"></i> {{ task.created_at|date:"M d, Y" }}
                                     </span>
+                                    </div>
                                 </div>
                                 <div class="task-actions">
                                     <form method="post" action="{% url 'toggle_task' task.id %}" style="display: inline;">
@@ -722,26 +1253,307 @@
         // Load saved theme or default to light
         const savedTheme = localStorage.getItem('theme') || 'light';
         html.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
+        updateThemeText(savedTheme);
 
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
+        const themeMenu = document.getElementById('themeMenu');
+        
+        themeToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            themeMenu.style.display = themeMenu.style.display === 'none' ? 'block' : 'none';
         });
 
-        function updateThemeIcon(theme) {
-            if (theme === 'dark') {
-                themeIcon.className = 'fas fa-sun';
-                themeText.textContent = 'Light';
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!themeToggle.contains(e.target) && !themeMenu.contains(e.target)) {
+                themeMenu.style.display = 'none';
+            }
+        });
+
+        // Theme selection
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const selectedTheme = option.getAttribute('data-theme');
+                html.setAttribute('data-theme', selectedTheme);
+                localStorage.setItem('theme', selectedTheme);
+                updateThemeText(selectedTheme);
+                themeMenu.style.display = 'none';
+            });
+        });
+
+        function updateThemeText(theme) {
+            const themeNames = {
+                'light': 'Light',
+                'dark': 'Dark',
+                'blue': 'Blue',
+                'green': 'Green',
+                'purple': 'Purple',
+                'orange': 'Orange'
+            };
+            themeText.textContent = themeNames[theme] || 'Theme';
+        }
+        
+        // Lead Developer Level: Bulk operations
+        function updateBulkToolbar() {
+            const checkboxes = document.querySelectorAll('.task-select-checkbox:checked');
+            const toolbar = document.getElementById('bulkToolbar');
+            const count = document.getElementById('selectedCount');
+            
+            if (checkboxes.length > 0) {
+                toolbar.style.display = 'block';
+                count.textContent = `${checkboxes.length} selected`;
             } else {
-                themeIcon.className = 'fas fa-moon';
-                themeText.textContent = 'Dark';
+                toolbar.style.display = 'none';
             }
         }
+        
+        function clearSelection() {
+            document.querySelectorAll('.task-select-checkbox').forEach(cb => cb.checked = false);
+            updateBulkToolbar();
+        }
+        
+        function bulkAction(action) {
+            const checkboxes = document.querySelectorAll('.task-select-checkbox:checked');
+            const taskIds = Array.from(checkboxes).map(cb => cb.value);
+            
+            if (taskIds.length === 0) {
+                alert('Please select at least one task.');
+                return;
+            }
+            
+            if (action === 'delete') {
+                if (!confirm(`Are you sure you want to delete ${taskIds.length} task(s)?`)) {
+                    return;
+                }
+            }
+            
+            const formData = new FormData();
+            taskIds.forEach(id => formData.append('task_ids[]', id));
+            
+            if (action === 'delete') {
+                fetch('{% url "bulk_delete_tasks" %}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + (data.error || 'Unknown error'));
+                    }
+                });
+            } else {
+                fetch('{% url "bulk_update_tasks" %}', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        task_ids: taskIds,
+                        action: action
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + (data.error || 'Unknown error'));
+                    }
+                });
+            }
+        }
+        
+        // Lead Developer Level: Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + K: Focus search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                document.querySelector('input[name="search"]')?.focus();
+            }
+            // Ctrl/Cmd + N: Focus task title input
+            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                e.preventDefault();
+                document.querySelector('input[name="title"]')?.focus();
+            }
+            // Escape: Clear selection
+            if (e.key === 'Escape') {
+                clearSelection();
+            }
+        });
+
+        // Lead Developer Level: Initialize Charts
+        {% if total_tasks > 0 %}
+        // Priority Distribution Chart
+        const priorityCtx = document.getElementById('priorityChart');
+        if (priorityCtx) {
+            new Chart(priorityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['High', 'Medium', 'Low'],
+                    datasets: [{
+                        data: [
+                            {{ priority_distribution.high }},
+                            {{ priority_distribution.medium }},
+                            {{ priority_distribution.low }}
+                        ],
+                        backgroundColor: [
+                            'rgba(220, 53, 69, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(40, 167, 69, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(220, 53, 69, 1)',
+                            'rgba(255, 193, 7, 1)',
+                            'rgba(40, 167, 69, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Daily Completion Trend Chart
+        const dailyCtx = document.getElementById('dailyChart');
+        if (dailyCtx) {
+            const dailyData = {{ daily_completion|json_data|default:"[]" }};
+            new Chart(dailyCtx, {
+                type: 'line',
+                data: {
+                    labels: dailyData.map(d => d.day),
+                    datasets: [{
+                        label: 'Completed Tasks',
+                        data: dailyData.map(d => d.count),
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary'),
+                                stepSize: 1
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--border-color')
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--border-color')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Monthly Statistics Chart
+        const monthlyCtx = document.getElementById('monthlyChart');
+        if (monthlyCtx) {
+            const monthlyData = {{ monthly_statistics|json_data|default:"[]" }};
+            new Chart(monthlyCtx, {
+                type: 'bar',
+                data: {
+                    labels: monthlyData.map(m => m.month),
+                    datasets: [{
+                        label: 'Tasks Created',
+                        data: monthlyData.map(m => m.count),
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary'),
+                                stepSize: 1
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--border-color')
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--border-color')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        {% endif %}
     </script>
+    
+    <!-- Lead Developer Level: Import Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--border-color);">
+                <div class="modal-header" style="border-bottom: 1px solid var(--border-color);">
+                    <h5 class="modal-title"><i class="fas fa-upload"></i> Import Tasks</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post" action="{% url 'import_tasks' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <p>Upload a JSON file to import tasks.</p>
+                        <div class="mb-3">
+                            <label for="importFile" class="form-label">Select JSON File</label>
+                            <input type="file" class="form-control" id="importFile" name="file" accept=".json" required>
+                            <small class="form-text text-muted">Only JSON files are supported.</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-upload"></i> Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
