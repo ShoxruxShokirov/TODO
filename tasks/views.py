@@ -119,12 +119,44 @@ class TaskListView(LoginRequiredMixin, ListView):
         Returns:
             dict: Context dictionary
         """
-        context = super().get_context_data(**kwargs)
-        context['form'] = TaskForm()
-        context['filter_type'] = self.request.GET.get('filter', 'all')
-        context['search_query'] = self.request.GET.get('search', '')
-        context['sort_type'] = self.request.GET.get('sort', 'created')
-        context['priority_filter'] = self.request.GET.get('priority', '')
+        # Initialize context with defaults to ensure it always exists
+        context = {
+            'form': None,
+            'filter_type': 'all',
+            'search_query': '',
+            'sort_type': 'created',
+            'priority_filter': '',
+            'total_tasks': 0,
+            'completed_tasks': 0,
+            'active_tasks': 0,
+            'overdue_tasks': 0,
+            'progress_percentage': 0,
+            'priority_distribution': {'high': 0, 'medium': 0, 'low': 0},
+            'completion_rate': 0,
+            'tasks_last_week': 0,
+            'completed_last_week': 0,
+            'monthly_statistics': [],
+            'daily_completion': [],
+        }
+        
+        try:
+            # Get base context first
+            context.update(super().get_context_data(**kwargs))
+            
+            # Add form and filter data
+            try:
+                context['form'] = TaskForm()
+            except Exception:
+                from .forms import TaskForm as BaseTaskForm
+                context['form'] = BaseTaskForm()
+                
+            context['filter_type'] = self.request.GET.get('filter', 'all')
+            context['search_query'] = self.request.GET.get('search', '')
+            context['sort_type'] = self.request.GET.get('sort', 'created')
+            context['priority_filter'] = self.request.GET.get('priority', '')
+        
+        except Exception as base_error:
+            logger.warning(f"Error in base get_context_data: {str(base_error)}")
         
         try:
             # Optimized statistics using aggregation

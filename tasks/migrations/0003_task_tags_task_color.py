@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='task',
             name='tags',
-            field=models.CharField(blank=True, help_text='Comma-separated tags (e.g., work, personal, urgent)', max_length=255, null=True, verbose_name='Tags', db_index=True),
+            field=models.CharField(blank=True, default='', help_text='Comma-separated tags (e.g., work, personal, urgent)', max_length=255, verbose_name='Tags'),
         ),
         migrations.AddField(
             model_name='task',

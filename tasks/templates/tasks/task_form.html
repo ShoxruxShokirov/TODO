@@ -484,7 +484,9 @@
                         </div>
                     </div>
 
+                    {% if 'tags' in form.fields or 'color' in form.fields %}
                     <div class="row">
+                        {% if 'tags' in form.fields %}
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label for="{{ form.tags.id_for_label }}">
@@ -503,6 +505,8 @@
                                 {% endif %}
                             </div>
                         </div>
+                        {% endif %}
+                        {% if 'color' in form.fields %}
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="{{ form.color.id_for_label }}">
@@ -523,7 +527,9 @@
                                 {% endif %}
                             </div>
                         </div>
+                        {% endif %}
                     </div>
+                    {% endif %}
 
                     {% if form.errors %}
                         <div class="alert alert-danger" role="alert">

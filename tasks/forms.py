@@ -12,7 +12,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.utils import timezone
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, FieldDoesNotExist
 from django.utils.translation import gettext_lazy as _
 from datetime import timedelta
 
@@ -83,36 +83,50 @@ class TaskForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Only add tags/color if they exist in the model (safe check)
+        # Only add tags/color if they exist in database (safe check)
+        # Check by trying to query the field name from database schema
+        from django.db import connection
         try:
-            # Try to access the field - if it doesn't exist, AttributeError will be raised
-            _ = Task._meta.get_field('tags')
-            self.fields['tags'] = forms.CharField(
-                label="Tags",
-                widget=forms.TextInput(attrs={
-                    'class': 'form-control',
-                    'placeholder': 'work, personal, urgent (comma-separated)',
-                }),
-                required=False,
-                help_text="Add tags separated by commas"
-            )
+            with connection.cursor() as cursor:
+                # Get table name
+                table_name = Task._meta.db_table
+                # Check if tags column exists (works for SQLite and PostgreSQL)
+                if 'sqlite' in connection.vendor.lower():
+                    cursor.execute(f"PRAGMA table_info({table_name})")
+                    columns = [row[1] for row in cursor.fetchall()]
+                else:
+                    cursor.execute("""
+                        SELECT column_name FROM information_schema.columns 
+                        WHERE table_name = %s AND column_name IN ('tags', 'color')
+                    """, [table_name])
+                    columns = [row[0] for row in cursor.fetchall()]
+                
+                # Add fields only if columns exist
+                if 'tags' in columns:
+                    self.fields['tags'] = forms.CharField(
+                        label="Tags",
+                        widget=forms.TextInput(attrs={
+                            'class': 'form-control',
+                            'placeholder': 'work, personal, urgent (comma-separated)',
+                        }),
+                        required=False,
+                        help_text="Add tags separated by commas"
+                    )
+                if 'color' in columns:
+                    self.fields['color'] = forms.CharField(
+                        label="Color",
+                        widget=forms.TextInput(attrs={
+                            'class': 'form-control',
+                            'type': 'color',
+                            'value': '#667eea',
+                        }),
+                        required=False,
+                        help_text="Choose a color for this task"
+                    )
         except Exception:
-            pass  # Field doesn't exist, skip it
-            
-        try:
-            _ = Task._meta.get_field('color')
-            self.fields['color'] = forms.CharField(
-                label="Color",
-                widget=forms.TextInput(attrs={
-                    'class': 'form-control',
-                    'type': 'color',
-                    'value': '#667eea',
-                }),
-                required=False,
-                help_text="Choose a color for this task"
-            )
-        except Exception:
-            pass  # Field doesn't exist, skip it
+            # If check fails for any reason, don't add fields
+            # This ensures the form works even if database check fails
+            pass
 
     def clean_title(self):
         """Validate and sanitize title."""

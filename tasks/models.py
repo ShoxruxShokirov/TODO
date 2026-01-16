@@ -126,24 +126,24 @@ class Task(models.Model):
         db_index=True,
     )
     
-    # Lead Developer Level: Tags for categorization
+    # Lead Developer Level: Tags for categorization (optional - added via migration)
+    # Note: These fields are added via migration 0003. If migration not applied, 
+    # they will be dynamically handled in views/forms
     tags = models.CharField(
         max_length=255,
         blank=True,
-        null=True,
+        default='',
         verbose_name="Tags",
         help_text="Comma-separated tags (e.g., work, personal, urgent)",
-        db_index=True,
     )
     
-    # Lead Developer Level: Color coding
+    # Lead Developer Level: Color coding (optional - added via migration)
     color = models.CharField(
         max_length=7,
         blank=True,
-        null=True,
+        default='',
         verbose_name="Color",
         help_text="Hex color code (e.g., #FF5733)",
-        default='',
     )
 
     # Custom manager

@@ -990,13 +990,17 @@
                             <div class="col-md-4">
                                 {{ form.due_date }}
                             </div>
+                            {% if 'tags' in form.fields %}
                             <div class="col-md-4">
                                 {{ form.tags }}
                             </div>
+                            {% endif %}
+                            {% if 'color' in form.fields %}
                             <div class="col-md-4">
                                 <label class="form-label">Color</label>
                                 {{ form.color }}
                             </div>
+                            {% endif %}
                         </div>
                     </form>
 
