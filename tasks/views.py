@@ -152,86 +152,81 @@ class TaskListView(LoginRequiredMixin, ListView):
             else:
                 context['progress_percentage'] = 0
             
-            # Lead Developer Level: Extended Analytics
-            # Statistics by priority
-            priority_stats = all_tasks.values('priority').annotate(count=Count('id'))
-            context['priority_distribution'] = {
-                'high': next((p['count'] for p in priority_stats if p['priority'] == 'high'), 0),
-                'medium': next((p['count'] for p in priority_stats if p['priority'] == 'medium'), 0),
-                'low': next((p['count'] for p in priority_stats if p['priority'] == 'low'), 0),
-            }
-            
-            # Statistics by completion status
-            context['completion_rate'] = (context['completed_tasks'] / context['total_tasks'] * 100) if context['total_tasks'] > 0 else 0
-            
-            # Tasks created in last 7 days
-            week_ago = timezone.now() - timedelta(days=7)
-            context['tasks_last_week'] = all_tasks.filter(created_at__gte=week_ago).count()
-            
-            # Tasks completed in last 7 days
-            context['completed_last_week'] = all_tasks.filter(
-                completed=True,
-                updated_at__gte=week_ago
-            ).count()
-            
-            # Monthly statistics (last 6 months)
-            from calendar import monthrange
-            monthly_data = []
-            now = timezone.now()
-            for i in range(6):
-                try:
-                    # Calculate month start and end properly
-                    target_date = now - timedelta(days=30*i)
-                    month_start = target_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-                    # Get last day of month
-                    last_day = monthrange(month_start.year, month_start.month)[1]
-                    month_end = month_start.replace(day=last_day, hour=23, minute=59, second=59, microsecond=999999)
-                    
-                    monthly_tasks = all_tasks.filter(created_at__range=[month_start, month_end]).count()
-                    monthly_data.append({
-                        'month': month_start.strftime('%b %Y'),
-                        'count': monthly_tasks
-                    })
-                except Exception as e:
-                    logger.warning(f"Error calculating monthly stats for month {i}: {str(e)}")
-                    monthly_data.append({
-                        'month': (now - timedelta(days=30*i)).strftime('%b %Y'),
-                        'count': 0
-                    })
-            context['monthly_statistics'] = list(reversed(monthly_data))
-            
-            # Daily completion trend (last 7 days)
-            daily_completion = []
-            now = timezone.now()
-            for i in range(7):
-                try:
-                    day = (now - timedelta(days=6-i)).date()
-                    # Create start and end of day in current timezone
-                    day_start = timezone.make_aware(datetime.combine(day, datetime.min.time()))
-                    day_end = timezone.make_aware(datetime.combine(day, datetime.max.time()))
-                    
-                    # Ensure datetime objects are timezone-aware
-                    if timezone.is_naive(day_start):
-                        day_start = timezone.make_aware(day_start)
-                    if timezone.is_naive(day_end):
-                        day_end = timezone.make_aware(day_end)
-                    
-                    day_completed = all_tasks.filter(
-                        completed=True,
-                        updated_at__gte=day_start,
-                        updated_at__lte=day_end
-                    ).count()
-                    daily_completion.append({
-                        'day': day.strftime('%d %b'),
-                        'count': day_completed
-                    })
-                except Exception as e:
-                    logger.warning(f"Error calculating daily completion for day {i}: {str(e)}")
-                    daily_completion.append({
-                        'day': (now - timedelta(days=6-i)).strftime('%d %b'),
-                        'count': 0
-                    })
-            context['daily_completion'] = daily_completion
+            # Lead Developer Level: Extended Analytics (with error handling)
+            try:
+                # Statistics by priority
+                priority_stats = all_tasks.values('priority').annotate(count=Count('id'))
+                context['priority_distribution'] = {
+                    'high': next((p['count'] for p in priority_stats if p['priority'] == 'high'), 0),
+                    'medium': next((p['count'] for p in priority_stats if p['priority'] == 'medium'), 0),
+                    'low': next((p['count'] for p in priority_stats if p['priority'] == 'low'), 0),
+                }
+                
+                # Statistics by completion status
+                context['completion_rate'] = round((context['completed_tasks'] / context['total_tasks'] * 100), 1) if context['total_tasks'] > 0 else 0
+                
+                # Tasks created in last 7 days
+                week_ago = timezone.now() - timedelta(days=7)
+                context['tasks_last_week'] = all_tasks.filter(created_at__gte=week_ago).count()
+                
+                # Tasks completed in last 7 days
+                context['completed_last_week'] = all_tasks.filter(
+                    completed=True,
+                    updated_at__gte=week_ago
+                ).count()
+                
+                # Monthly statistics (last 6 months) - simplified
+                monthly_data = []
+                now = timezone.now()
+                for i in range(6):
+                    try:
+                        # Simple approach: get tasks from last 30*i days
+                        days_ago = 30 * (5 - i)
+                        date_from = now - timedelta(days=days_ago + 30)
+                        date_to = now - timedelta(days=days_ago)
+                        monthly_tasks = all_tasks.filter(
+                            created_at__gte=date_from,
+                            created_at__lt=date_to
+                        ).count()
+                        monthly_data.append({
+                            'month': date_from.strftime('%b %Y'),
+                            'count': monthly_tasks
+                        })
+                    except Exception:
+                        monthly_data.append({'month': 'N/A', 'count': 0})
+                context['monthly_statistics'] = monthly_data
+                
+                # Daily completion trend (last 7 days) - simplified
+                daily_completion = []
+                now = timezone.now()
+                for i in range(7):
+                    try:
+                        days_ago = 6 - i
+                        day_start = (now - timedelta(days=days_ago)).replace(hour=0, minute=0, second=0, microsecond=0)
+                        day_end = (now - timedelta(days=days_ago)).replace(hour=23, minute=59, second=59, microsecond=999999)
+                        
+                        day_completed = all_tasks.filter(
+                            completed=True,
+                            updated_at__gte=day_start,
+                            updated_at__lte=day_end
+                        ).count()
+                        daily_completion.append({
+                            'day': day_start.strftime('%d %b'),
+                            'count': day_completed
+                        })
+                    except Exception:
+                        daily_completion.append({'day': 'N/A', 'count': 0})
+                context['daily_completion'] = daily_completion
+                
+            except Exception as analytics_error:
+                # If analytics fail, set defaults
+                logger.warning(f"Analytics calculation error: {str(analytics_error)}")
+                context['priority_distribution'] = {'high': 0, 'medium': 0, 'low': 0}
+                context['completion_rate'] = 0
+                context['tasks_last_week'] = 0
+                context['completed_last_week'] = 0
+                context['monthly_statistics'] = []
+                context['daily_completion'] = []
                 
         except Exception as e:
             logger.error(f"Error in TaskListView.get_context_data: {str(e)}", exc_info=True)
@@ -264,6 +259,11 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         """Save task with user assignment."""
         try:
             form.instance.user = self.request.user
+            # Only set tags/color if they exist in the form and model
+            if 'tags' in form.cleaned_data and hasattr(form.instance, 'tags'):
+                form.instance.tags = form.cleaned_data.get('tags', '')
+            if 'color' in form.cleaned_data and hasattr(form.instance, 'color'):
+                form.instance.color = form.cleaned_data.get('color', '')
             response = super().form_valid(form)
             messages.success(self.request, 'Task created successfully!')
             logger.info(f"Task created: {form.instance.id} by user {self.request.user.username}")
@@ -297,6 +297,11 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         """Save updated task."""
         try:
+            # Only set tags/color if they exist in the form and model
+            if 'tags' in form.cleaned_data and hasattr(form.instance, 'tags'):
+                form.instance.tags = form.cleaned_data.get('tags', '')
+            if 'color' in form.cleaned_data and hasattr(form.instance, 'color'):
+                form.instance.color = form.cleaned_data.get('color', '')
             response = super().form_valid(form)
             messages.success(self.request, 'Task updated successfully!')
             logger.info(f"Task updated: {self.object.id} by user {self.request.user.username}")
@@ -529,13 +534,14 @@ def export_tasks(request, format='json'):
             writer.writerow(['Title', 'Description', 'Priority', 'Completed', 'Due Date', 'Tags', 'Created At', 'Updated At'])
             
             for task in tasks:
+                tags_value = getattr(task, 'tags', '') or '' if hasattr(task, 'tags') else ''
                 writer.writerow([
                     task.title,
                     task.description or '',
                     task.get_priority_display(),
                     'Yes' if task.completed else 'No',
                     task.due_date.strftime('%Y-%m-%d %H:%M:%S') if task.due_date else '',
-                    task.tags or '',
+                    tags_value,
                     task.created_at.strftime('%Y-%m-%d %H:%M:%S'),
                     task.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
                 ])
@@ -546,18 +552,22 @@ def export_tasks(request, format='json'):
         else:  # JSON
             tasks_data = []
             for task in tasks:
-                tasks_data.append({
+                task_dict = {
                     'id': task.id,
                     'title': task.title,
                     'description': task.description,
                     'priority': task.priority,
                     'completed': task.completed,
                     'due_date': task.due_date.isoformat() if task.due_date else None,
-                    'tags': task.tags,
-                    'color': task.color,
                     'created_at': task.created_at.isoformat(),
                     'updated_at': task.updated_at.isoformat(),
-                })
+                }
+                # Only add tags/color if they exist
+                if hasattr(task, 'tags'):
+                    task_dict['tags'] = task.tags or ''
+                if hasattr(task, 'color'):
+                    task_dict['color'] = task.color or ''
+                tasks_data.append(task_dict)
             
             response = HttpResponse(
                 json.dumps(tasks_data, indent=2),
@@ -606,16 +616,21 @@ def import_tasks(request):
                         if Task.objects.filter(user=request.user, title=task_data.get('title', '')).exists():
                             continue
                         
-                        Task.objects.create(
-                            user=request.user,
-                            title=task_data.get('title', 'Untitled'),
-                            description=task_data.get('description', ''),
-                            priority=task_data.get('priority', 'medium'),
-                            completed=task_data.get('completed', False),
-                            due_date=datetime.fromisoformat(task_data['due_date']) if task_data.get('due_date') else None,
-                            tags=task_data.get('tags', ''),
-                            color=task_data.get('color', ''),
-                        )
+                        task_kwargs = {
+                            'user': request.user,
+                            'title': task_data.get('title', 'Untitled'),
+                            'description': task_data.get('description', ''),
+                            'priority': task_data.get('priority', 'medium'),
+                            'completed': task_data.get('completed', False),
+                        }
+                        if task_data.get('due_date'):
+                            task_kwargs['due_date'] = datetime.fromisoformat(task_data['due_date'])
+                        # Only add tags/color if they exist in model
+                        if hasattr(Task, 'tags') and 'tags' in task_data:
+                            task_kwargs['tags'] = task_data.get('tags', '')
+                        if hasattr(Task, 'color') and 'color' in task_data:
+                            task_kwargs['color'] = task_data.get('color', '')
+                        Task.objects.create(**task_kwargs)
                         imported_count += 1
                 
                 messages.success(request, f'{imported_count} task(s) imported successfully.')
@@ -647,19 +662,23 @@ def api_task_list(request):
         tasks_data = []
         
         for task in tasks:
-            tasks_data.append({
+            task_dict = {
                 'id': task.id,
                 'title': task.title,
                 'description': task.description,
                 'priority': task.priority,
                 'completed': task.completed,
                 'due_date': task.due_date.isoformat() if task.due_date else None,
-                'tags': task.tags,
-                'color': task.color,
                 'created_at': task.created_at.isoformat(),
                 'updated_at': task.updated_at.isoformat(),
                 'is_overdue': task.is_overdue(),
-            })
+            }
+            # Only add tags/color if they exist
+            if hasattr(task, 'tags'):
+                task_dict['tags'] = task.tags or ''
+            if hasattr(task, 'color'):
+                task_dict['color'] = task.color or ''
+            tasks_data.append(task_dict)
         
         return JsonResponse({'tasks': tasks_data}, safe=False)
         
@@ -692,13 +711,16 @@ def api_task_detail(request, task_id):
             'priority': task.priority,
             'completed': task.completed,
             'due_date': task.due_date.isoformat() if task.due_date else None,
-            'tags': task.tags,
-            'color': task.color,
             'created_at': task.created_at.isoformat(),
             'updated_at': task.updated_at.isoformat(),
             'is_overdue': task.is_overdue(),
             'days_until_due': task.days_until_due(),
         }
+        # Only add tags/color if they exist
+        if hasattr(task, 'tags'):
+            task_data['tags'] = task.tags or ''
+        if hasattr(task, 'color'):
+            task_data['color'] = task.color or ''
         
         return JsonResponse(task_data)
         

@@ -1171,7 +1171,7 @@
                     <div class="task-list">
                         {% for task in tasks %}
                             <div class="task-item {% if task.completed %}completed{% endif %}" 
-                                 style="{% if task.color %}border-left: 4px solid {{ task.color }};{% endif %}">
+                                 style="{% if task|safe_getattr:'color' %}border-left: 4px solid {{ task|safe_getattr:'color' }};{% endif %}">
                                 <!-- Lead Developer Level: Bulk selection checkbox -->
                                 <div class="task-checkbox">
                                     <input type="checkbox" class="form-check-input task-select-checkbox" 
@@ -1190,13 +1190,15 @@
                                     <span class="priority-badge priority-{{ task.priority }}">
                                         <i class="fas fa-flag"></i> {{ task.get_priority_display }}
                                     </span>
-                                    {% if task.tags %}
-                                        <span class="tags-badge">
-                                            {% for tag in task.tags|split_tags %}
-                                                <span class="badge bg-info me-1"><i class="fas fa-tag"></i> {{ tag }}</span>
-                                            {% endfor %}
-                                        </span>
-                                    {% endif %}
+                                    {% with task_tags=task|safe_getattr:'tags' %}
+                                        {% if task_tags %}
+                                            <span class="tags-badge">
+                                                {% for tag in task_tags|split_tags %}
+                                                    <span class="badge bg-info me-1"><i class="fas fa-tag"></i> {{ tag }}</span>
+                                                {% endfor %}
+                                            </span>
+                                        {% endif %}
+                                    {% endwith %}
                                     {% if task.due_date %}
                                         <span class="due-date {% if task.is_overdue %}overdue{% endif %}">
                                             <i class="fas fa-calendar"></i> 

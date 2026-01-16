@@ -21,7 +21,10 @@ def split_tags(value):
     """
     if not value:
         return []
-    return [tag.strip() for tag in str(value).split(',') if tag.strip()]
+    try:
+        return [tag.strip() for tag in str(value).split(',') if tag.strip()]
+    except (AttributeError, TypeError):
+        return []
 
 
 @register.filter
@@ -42,4 +45,22 @@ def json_data(value):
     except (TypeError, ValueError) as e:
         # Return empty array if serialization fails
         return mark_safe('[]')
+
+
+@register.filter
+def safe_getattr(obj, attr_name):
+    """
+    Safely get attribute from object, return empty string if doesn't exist.
+    
+    Args:
+        obj: Object to get attribute from
+        attr_name: Name of the attribute
+        
+    Returns:
+        Attribute value or empty string
+    """
+    try:
+        return getattr(obj, attr_name, '') or ''
+    except (AttributeError, Exception):
+        return ''
 

@@ -77,31 +77,42 @@ class TaskForm(forms.ModelForm):
         help_text="Optional deadline for this task"
     )
 
-    # Lead Developer Level: Tags and color fields
-    tags = forms.CharField(
-        label="Tags",
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'work, personal, urgent (comma-separated)',
-        }),
-        required=False,
-        help_text="Add tags separated by commas"
-    )
-    
-    color = forms.CharField(
-        label="Color",
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'type': 'color',
-            'value': '#667eea',
-        }),
-        required=False,
-        help_text="Choose a color for this task"
-    )
-
     class Meta:
         model = Task
-        fields = ['title', 'description', 'priority', 'due_date', 'tags', 'color']
+        fields = ['title', 'description', 'priority', 'due_date']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Only add tags/color if they exist in the model (safe check)
+        try:
+            # Try to access the field - if it doesn't exist, AttributeError will be raised
+            _ = Task._meta.get_field('tags')
+            self.fields['tags'] = forms.CharField(
+                label="Tags",
+                widget=forms.TextInput(attrs={
+                    'class': 'form-control',
+                    'placeholder': 'work, personal, urgent (comma-separated)',
+                }),
+                required=False,
+                help_text="Add tags separated by commas"
+            )
+        except Exception:
+            pass  # Field doesn't exist, skip it
+            
+        try:
+            _ = Task._meta.get_field('color')
+            self.fields['color'] = forms.CharField(
+                label="Color",
+                widget=forms.TextInput(attrs={
+                    'class': 'form-control',
+                    'type': 'color',
+                    'value': '#667eea',
+                }),
+                required=False,
+                help_text="Choose a color for this task"
+            )
+        except Exception:
+            pass  # Field doesn't exist, skip it
 
     def clean_title(self):
         """Validate and sanitize title."""
