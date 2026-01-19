@@ -83,8 +83,8 @@ class TaskForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Only add tags/color if they exist in database (safe check)
-        # Check by trying to query the field name from database schema
+        # Only add tags if it exists in database (safe check)
+        # Color field removed as requested
         from django.db import connection
         try:
             with connection.cursor() as cursor:
@@ -97,11 +97,11 @@ class TaskForm(forms.ModelForm):
                 else:
                     cursor.execute("""
                         SELECT column_name FROM information_schema.columns 
-                        WHERE table_name = %s AND column_name IN ('tags', 'color')
+                        WHERE table_name = %s AND column_name = 'tags'
                     """, [table_name])
                     columns = [row[0] for row in cursor.fetchall()]
                 
-                # Add fields only if columns exist
+                # Add tags field only if column exists
                 if 'tags' in columns:
                     self.fields['tags'] = forms.CharField(
                         label="Tags",
@@ -111,17 +111,6 @@ class TaskForm(forms.ModelForm):
                         }),
                         required=False,
                         help_text="Add tags separated by commas"
-                    )
-                if 'color' in columns:
-                    self.fields['color'] = forms.CharField(
-                        label="Color",
-                        widget=forms.TextInput(attrs={
-                            'class': 'form-control',
-                            'type': 'color',
-                            'value': '#667eea',
-                        }),
-                        required=False,
-                        help_text="Choose a color for this task"
                     )
         except Exception:
             # If check fails for any reason, don't add fields

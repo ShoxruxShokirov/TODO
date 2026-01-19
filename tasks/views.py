@@ -152,17 +152,12 @@ class TaskListView(LoginRequiredMixin, ListView):
                 from .forms import TaskForm
                 try:
                     form = TaskForm()
-                    # Remove tags/color if they cause issues
+                    # Remove tags if it causes issues
                     if 'tags' in form.fields:
                         try:
                             _ = form.fields['tags']
                         except Exception:
                             form.fields.pop('tags', None)
-                    if 'color' in form.fields:
-                        try:
-                            _ = form.fields['color']
-                        except Exception:
-                            form.fields.pop('color', None)
                     context['form'] = form
                 except Exception:
                     # If all fails, create empty form
@@ -171,7 +166,7 @@ class TaskListView(LoginRequiredMixin, ListView):
                     class MinimalTaskForm(forms.ModelForm):
                         class Meta:
                             model = Task
-                            fields = ['title', 'description', 'priority', 'due_date']
+                            fields = ['title', 'description', 'priority']
                     context['form'] = MinimalTaskForm()
                 
             context['filter_type'] = self.request.GET.get('filter', 'all')
@@ -315,11 +310,9 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         """Save task with user assignment."""
         try:
             form.instance.user = self.request.user
-            # Only set tags/color if they exist in the form and model
+            # Only set tags if it exists in the form and model
             if 'tags' in form.cleaned_data and hasattr(form.instance, 'tags'):
                 form.instance.tags = form.cleaned_data.get('tags', '')
-            if 'color' in form.cleaned_data and hasattr(form.instance, 'color'):
-                form.instance.color = form.cleaned_data.get('color', '')
             response = super().form_valid(form)
             messages.success(self.request, 'Task created successfully!')
             logger.info(f"Task created: {form.instance.id} by user {self.request.user.username}")
@@ -353,11 +346,9 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         """Save updated task."""
         try:
-            # Only set tags/color if they exist in the form and model
+            # Only set tags if it exists in the form and model
             if 'tags' in form.cleaned_data and hasattr(form.instance, 'tags'):
                 form.instance.tags = form.cleaned_data.get('tags', '')
-            if 'color' in form.cleaned_data and hasattr(form.instance, 'color'):
-                form.instance.color = form.cleaned_data.get('color', '')
             response = super().form_valid(form)
             messages.success(self.request, 'Task updated successfully!')
             logger.info(f"Task updated: {self.object.id} by user {self.request.user.username}")
