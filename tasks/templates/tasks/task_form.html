@@ -1215,7 +1215,7 @@
                     </div>
 
                     <div class="row premium-fields-row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group premium-field-group">
                                 <label for="{{ form.priority.id_for_label }}" class="premium-label">
                                     <i class="fas fa-flag"></i>
@@ -1228,25 +1228,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group premium-field-group">
-                                <label for="{{ form.due_date.id_for_label }}" class="premium-label">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    <span>Due Date</span>
-                                </label>
-                                <div class="input-group-icon date-input-wrapper premium-date-wrapper">
-                                    <div class="date-icon-container">
-                                        <i class="fas fa-calendar calendar-icon"></i>
-                                    </div>
-                                    {{ form.due_date }}
-                                    <div class="date-glow-effect"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {% if 'tags' in form.fields or 'color' in form.fields %}
-                    <div class="row premium-fields-row premium-special-row">
                         {% if 'tags' in form.fields %}
                         <div class="col-md-8">
                             <div class="form-group premium-field-group">
@@ -1279,44 +1260,7 @@
                             </div>
                         </div>
                         {% endif %}
-                        {% if 'color' in form.fields %}
-                        <div class="col-md-4">
-                            <div class="form-group premium-field-group">
-                                <label for="{{ form.color.id_for_label }}" class="premium-label">
-                                    <i class="fas fa-palette"></i>
-                                    <span>Color</span>
-                                </label>
-                                <div class="color-picker-wrapper premium-color-wrapper">
-                                    <div class="color-picker-container premium-color-container">
-                                        <div class="color-top-gradient"></div>
-                                        <div class="color-picker-row">
-                                            <div class="color-input-wrapper">
-                                                {{ form.color }}
-                                                <div class="color-input-ring"></div>
-                                            </div>
-                                            <div class="color-preview premium-color-preview" id="colorPreview" onclick="document.querySelector('input[type=\"color\"]').click()">
-                                                <div class="color-preview-inner">
-                                                    <i class="fas fa-check"></i>
-                                                    <div class="color-preview-text">Выбранный цвет</div>
-                                                    <div class="color-hex-display" id="colorHexDisplay">#667EEA</div>
-                                                </div>
-                                                <div class="color-preview-shine"></div>
-                                            </div>
-                                        </div>
-                                        <div class="color-container-glow"></div>
-                                    </div>
-                                </div>
-                                {% if form.color.help_text %}
-                                    <div class="field-hint">
-                                        <i class="fas fa-info-circle"></i>
-                                        {{ form.color.help_text }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% endif %}
                     </div>
-                    {% endif %}
 
                     {% if form.errors %}
                         <div class="alert alert-danger" role="alert">
@@ -1370,53 +1314,6 @@
             }
         }
 
-        // Color picker preview update - УЛУЧШЕННАЯ ЛОГИКА
-        const colorInput = document.querySelector('input[type="color"]');
-        const colorPreview = document.getElementById('colorPreview');
-        
-        if (colorInput && colorPreview) {
-            // Функция для обновления превью с анимацией
-            function updateColorPreview(color) {
-                colorPreview.style.background = color;
-                colorPreview.classList.add('has-color');
-                
-                // Добавляем эффект пульсации
-                colorPreview.style.animation = 'pulse 0.6s ease-out';
-                setTimeout(() => {
-                    colorPreview.style.animation = '';
-                }, 600);
-                
-                // Обновляем текст с hex-кодом
-                const hexText = color.toUpperCase();
-                const hexDisplay = colorPreview.querySelector('#colorHexDisplay');
-                if (hexDisplay) {
-                    hexDisplay.textContent = hexText;
-                    hexDisplay.style.animation = 'fadeIn 0.5s ease';
-                }
-            }
-            
-            // Update preview on color change
-            colorInput.addEventListener('input', function() {
-                updateColorPreview(this.value);
-            });
-            
-            // Update preview on change (для поддержки всех браузеров)
-            colorInput.addEventListener('change', function() {
-                updateColorPreview(this.value);
-            });
-
-            // Set initial color if exists
-            if (colorInput.value && colorInput.value !== '#000000') {
-                updateColorPreview(colorInput.value);
-            } else {
-                // Default gradient
-                colorPreview.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                const textElement = colorPreview.querySelector('.color-preview-text');
-                if (textElement) {
-                    textElement.textContent = 'Выберите цвет';
-                }
-            }
-        }
     </script>
 </body>
 </html>
