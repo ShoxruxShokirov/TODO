@@ -491,59 +491,143 @@
             gap: 0.5rem;
         }
 
-        /* Date Input Styling - LEAD DEVELOPER LEVEL */
+        /* Premium Fields Row */
+        .premium-fields-row {
+            margin-bottom: 2rem;
+        }
+
+        .premium-special-row {
+            margin-top: 1rem;
+        }
+
+        .premium-field-group {
+            position: relative;
+        }
+
+        .premium-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            margin-bottom: 0.875rem;
+        }
+
+        .premium-label i {
+            font-size: 1rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3));
+        }
+
+        /* Premium Date Input Styling */
+        .premium-date-wrapper,
         .date-input-wrapper {
             position: relative;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 0.75rem;
-            border: 2px solid rgba(102, 126, 234, 0.2);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%);
+            backdrop-filter: blur(15px) saturate(180%);
+            border-radius: 18px;
+            padding: 1rem 1.25rem 1rem 3.5rem;
+            border: 2px solid rgba(102, 126, 234, 0.25);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 
-                0 4px 16px rgba(102, 126, 234, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+                0 6px 24px rgba(102, 126, 234, 0.15),
+                inset 0 1px 2px rgba(255, 255, 255, 0.4),
+                0 0 0 0 rgba(102, 126, 234, 0);
             overflow: hidden;
         }
 
-        .date-input-wrapper::before {
-            content: '';
+        .date-icon-container {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border-radius: 12px;
+            z-index: 3;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .date-glow-effect {
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
         }
 
-        .date-input-wrapper:hover {
-            border-color: rgba(102, 126, 234, 0.5);
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%);
+        .premium-date-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--primary-gradient);
+            border-radius: 20px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.5s ease;
+        }
+
+        .premium-date-wrapper:hover {
+            border-color: rgba(102, 126, 234, 0.6);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.18) 0%, rgba(118, 75, 162, 0.18) 100%);
             box-shadow: 
-                0 8px 24px rgba(102, 126, 234, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.4);
-            transform: translateY(-2px);
+                0 10px 32px rgba(102, 126, 234, 0.25),
+                inset 0 2px 4px rgba(255, 255, 255, 0.5),
+                0 0 40px rgba(102, 126, 234, 0.15);
+            transform: translateY(-3px);
         }
 
-        .date-input-wrapper:hover::before {
-            left: 100%;
+        .premium-date-wrapper:hover .date-icon-container {
+            transform: translateY(-50%) scale(1.1) rotate(5deg);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
-        .date-input-wrapper:focus-within {
+        .premium-date-wrapper:hover .date-glow-effect {
+            opacity: 1;
+        }
+
+        .premium-date-wrapper:focus-within {
             border-color: var(--accent-1);
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.22) 0%, rgba(118, 75, 162, 0.22) 100%);
             box-shadow: 
-                0 0 0 4px var(--focus-ring),
-                0 12px 32px rgba(102, 126, 234, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.5),
-                0 0 60px rgba(102, 126, 234, 0.15);
-            transform: translateY(-3px) scale(1.01);
+                0 0 0 5px var(--focus-ring),
+                0 16px 40px rgba(102, 126, 234, 0.35),
+                inset 0 2px 6px rgba(255, 255, 255, 0.6),
+                0 0 80px rgba(102, 126, 234, 0.2);
+            transform: translateY(-4px) scale(1.02);
         }
 
-        .date-input-wrapper .calendar-icon {
+        .premium-date-wrapper:focus-within::before {
+            opacity: 0.3;
+        }
+
+        .premium-date-wrapper:focus-within .date-icon-container {
+            transform: translateY(-50%) scale(1.15) rotate(10deg);
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .calendar-icon {
             color: var(--accent-1);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             filter: drop-shadow(0 2px 8px rgba(102, 126, 234, 0.4));
             background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
@@ -552,85 +636,208 @@
             background-clip: text;
         }
 
-        .date-input-wrapper .form-control:focus ~ .calendar-icon,
-        .date-input-wrapper:focus-within .calendar-icon {
-            transform: scale(1.2) rotate(10deg);
-            filter: drop-shadow(0 4px 12px rgba(102, 126, 234, 0.6));
+        .premium-date-wrapper .form-control {
+            background: transparent;
+            border: none;
+            padding: 0;
+            font-weight: 600;
+            font-size: 1rem;
         }
 
-        /* Tags Input Styling - LEAD DEVELOPER LEVEL */
+        .premium-date-wrapper .form-control:focus {
+            background: transparent;
+            box-shadow: none;
+            border: none;
+        }
+
+        /* Premium Tags Input Styling */
+        .premium-tags-wrapper,
         .tags-input-wrapper {
             position: relative;
         }
 
-        .tags-input-wrapper .input-group-icon {
+        .tags-icon-container {
             position: relative;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(249, 115, 22, 0.15) 100%);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1rem 1.25rem 1rem 3.5rem;
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 
+                0 6px 24px rgba(245, 158, 11, 0.12),
+                inset 0 1px 2px rgba(255, 255, 255, 0.4);
+            overflow: hidden;
         }
 
-        .tags-input-wrapper .input-group-icon::after {
-            content: '';
+        .tag-icon {
             position: absolute;
-            bottom: -2px;
-            left: 3rem;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #f59e0b, #f97316);
-            transition: width 0.4s ease;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(249, 115, 22, 0.2));
+            border-radius: 12px;
+            z-index: 3;
+            color: #f59e0b;
+            font-size: 1.2rem;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3));
+        }
+
+        .tags-underline-effect {
+            position: absolute;
+            bottom: 0;
+            left: 3.5rem;
+            right: 1.25rem;
+            height: 3px;
+            background: linear-gradient(90deg, #f59e0b, #f97316, #f59e0b);
+            background-size: 200% 100%;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
             border-radius: 2px;
         }
 
-        .tags-input-wrapper:focus-within .input-group-icon::after {
-            width: calc(100% - 3rem);
+        .tags-icon-container .form-control {
+            background: transparent;
+            border: none;
+            padding: 0;
+            font-weight: 600;
         }
 
-        .tags-input-wrapper .input-group-icon i {
-            color: #f59e0b;
-            font-size: 1.1rem;
+        .tags-icon-container .form-control:focus {
+            background: transparent;
+            box-shadow: none;
+            border: none;
+        }
+
+        .tags-icon-container:hover {
+            border-color: rgba(245, 158, 11, 0.5);
+            box-shadow: 
+                0 10px 32px rgba(245, 158, 11, 0.2),
+                inset 0 2px 4px rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .tags-icon-container:hover .tag-icon {
+            transform: translateY(-50%) scale(1.1) rotate(-5deg);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(249, 115, 22, 0.3));
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .tags-icon-container:focus-within {
+            border-color: #f59e0b;
+            box-shadow: 
+                0 0 0 5px rgba(245, 158, 11, 0.2),
+                0 16px 40px rgba(245, 158, 11, 0.25),
+                inset 0 2px 6px rgba(255, 255, 255, 0.6);
+            transform: translateY(-3px) scale(1.01);
+        }
+
+        .tags-icon-container:focus-within .tags-underline-effect {
+            transform: scaleX(1);
+            animation: underlineFlow 2s ease infinite;
+        }
+
+        .tags-icon-container:focus-within .tag-icon {
+            transform: translateY(-50%) scale(1.15) rotate(-8deg);
             background: linear-gradient(135deg, #f59e0b, #f97316);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3));
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.6));
         }
 
-        .tags-input-wrapper .form-control:focus ~ i,
-        .tags-input-wrapper:focus-within .input-group-icon i {
-            transform: scale(1.15) rotate(-5deg);
-            filter: drop-shadow(0 4px 8px rgba(245, 158, 11, 0.5));
+        @keyframes underlineFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
+        .premium-hint-box,
         .tags-hint {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            margin-top: 0.875rem;
-            padding: 1.125rem 1.5rem;
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(249, 115, 22, 0.1) 100%);
-            backdrop-filter: blur(10px);
-            border-left: 5px solid;
-            border-image: linear-gradient(135deg, #f59e0b, #f97316) 1;
-            border-radius: 16px;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding: 1.25rem 1.75rem;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.18) 0%, rgba(249, 115, 22, 0.12) 100%);
+            backdrop-filter: blur(12px) saturate(150%);
+            border-left: 6px solid;
+            border-image: linear-gradient(180deg, #f59e0b, #f97316, #f59e0b) 1;
+            border-radius: 18px;
             font-size: 0.9rem;
             color: var(--text-primary);
             font-weight: 600;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 
-                0 4px 16px rgba(245, 158, 11, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+                0 6px 24px rgba(245, 158, 11, 0.25),
+                inset 0 2px 4px rgba(255, 255, 255, 0.4),
+                0 0 0 0 rgba(245, 158, 11, 0);
             position: relative;
             overflow: hidden;
         }
 
-        .tags-hint::before {
+        .hint-icon-wrapper {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(249, 115, 22, 0.3));
+            border-radius: 12px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .hint-icon-wrapper i {
+            font-size: 1.25rem;
+            color: #f59e0b;
+            animation: hintPulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes hintPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.1) rotate(5deg); opacity: 0.9; }
+        }
+
+        .hint-content {
+            flex: 1;
+            line-height: 1.6;
+        }
+
+        .hint-content strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #f59e0b;
+            font-size: 0.95rem;
+        }
+
+        .hint-example {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            margin-left: 0.5rem;
+            color: #d97706;
+        }
+
+        .premium-hint-box::before {
             content: '';
             position: absolute;
             top: -50%;
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
-            animation: shimmer 4s infinite;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.25) 50%, transparent 70%);
+            animation: shimmer 5s infinite;
             transform: rotate(45deg);
         }
 
@@ -639,104 +846,76 @@
             100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
-        .tags-hint::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(180deg, #f59e0b, #f97316, #f59e0b);
-            background-size: 100% 200%;
-            animation: gradientMove 2s ease infinite;
-        }
-
-        @keyframes gradientMove {
-            0%, 100% { background-position: 0% 0%; }
-            50% { background-position: 0% 100%; }
-        }
-
-        .tags-hint:hover {
-            transform: translateX(6px) translateY(-2px);
+        .premium-hint-box:hover {
+            transform: translateX(8px) translateY(-3px);
             box-shadow: 
-                0 8px 24px rgba(245, 158, 11, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.4);
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(249, 115, 22, 0.15) 100%);
+                0 12px 36px rgba(245, 158, 11, 0.35),
+                inset 0 2px 6px rgba(255, 255, 255, 0.5),
+                0 0 60px rgba(245, 158, 11, 0.2);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(249, 115, 22, 0.18) 100%);
         }
 
-        .tags-hint i {
-            color: #f59e0b;
-            font-size: 1.125rem;
-            position: relative;
-            z-index: 2;
-            animation: bounce 2.5s ease-in-out infinite;
-            filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.4));
+        .premium-hint-box:hover .hint-icon-wrapper {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-4px) rotate(-5deg); }
-            75% { transform: translateY(-2px) rotate(5deg); }
+        [data-theme="dark"] .premium-hint-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(249, 115, 22, 0.18) 100%);
         }
 
-        .tags-hint span {
-            position: relative;
-            z-index: 2;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        [data-theme="dark"] .tags-hint {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(249, 115, 22, 0.15) 100%);
-            color: #fbbf24;
-        }
-
-        /* Color Picker Styling - LEAD DEVELOPER LEVEL */
+        /* Premium Color Picker Styling */
+        .premium-color-wrapper,
         .color-picker-wrapper {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
 
+        .premium-color-container,
         .color-picker-container {
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: stretch;
-            gap: 1.25rem;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 50%, rgba(240, 147, 251, 0.1) 100%);
-            backdrop-filter: blur(15px) saturate(150%);
+            gap: 1.5rem;
+            padding: 1.75rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 50%, rgba(240, 147, 251, 0.15) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
             border-radius: 24px;
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(102, 126, 234, 0.35);
+            transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
             overflow: hidden;
             box-shadow: 
-                0 8px 32px rgba(102, 126, 234, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+                0 10px 40px rgba(102, 126, 234, 0.25),
+                inset 0 2px 4px rgba(255, 255, 255, 0.4),
+                0 0 0 0 rgba(102, 126, 234, 0);
         }
 
-        .color-picker-container::before {
-            content: '';
+        .color-top-gradient {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 5px;
             background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
-            background-size: 300% 100%;
-            animation: gradientShift 4s ease infinite;
+            background-size: 400% 100%;
+            animation: gradientShift 5s ease infinite;
+            z-index: 1;
         }
 
-        .color-picker-container::after {
-            content: '';
+        .color-container-glow {
             position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
-            animation: rotate 15s linear infinite;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.6s ease;
             pointer-events: none;
+            z-index: 0;
         }
 
         @keyframes gradientShift {
@@ -744,13 +923,17 @@
             50% { background-position: 100% 50%; }
         }
 
-        .color-picker-container:hover {
+        .premium-color-container:hover {
             border-color: var(--accent-1);
             box-shadow: 
-                0 12px 40px rgba(102, 126, 234, 0.35),
-                inset 0 1px 0 rgba(255, 255, 255, 0.4),
-                0 0 80px rgba(102, 126, 234, 0.2);
-            transform: translateY(-4px) scale(1.02);
+                0 16px 48px rgba(102, 126, 234, 0.4),
+                inset 0 2px 6px rgba(255, 255, 255, 0.5),
+                0 0 100px rgba(102, 126, 234, 0.25);
+            transform: translateY(-5px) scale(1.03);
+        }
+
+        .premium-color-container:hover .color-container-glow {
+            opacity: 1;
         }
 
         .color-picker-row {
@@ -760,11 +943,32 @@
             width: 100%;
         }
 
+        .color-input-wrapper {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .color-input-ring {
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
+            border: 3px solid transparent;
+            border-radius: 26px;
+            background: var(--primary-gradient);
+            background-clip: padding-box;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: -1;
+        }
+
+        .premium-color-container input[type="color"],
         .color-picker-container input[type="color"] {
-            width: 90px !important;
-            height: 90px !important;
-            border: 4px solid rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
+            width: 100px !important;
+            height: 100px !important;
+            border: 5px solid rgba(255, 255, 255, 0.98);
+            border-radius: 22px;
             cursor: pointer;
             background: none;
             padding: 0;
@@ -772,14 +976,14 @@
             -webkit-appearance: none;
             -moz-appearance: none;
             box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.25),
-                0 0 0 4px rgba(102, 126, 234, 0.15),
-                inset 0 2px 4px rgba(255, 255, 255, 0.3);
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                0 10px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 5px rgba(102, 126, 234, 0.2),
+                inset 0 3px 6px rgba(255, 255, 255, 0.4),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             overflow: hidden;
-            flex-shrink: 0;
             position: relative;
-            z-index: 2;
+            z-index: 3;
         }
 
         .color-picker-container input[type="color"]::-webkit-color-swatch-wrapper {
@@ -798,26 +1002,31 @@
             border-radius: 14px;
         }
 
-        .color-picker-container input[type="color"]:hover {
-            transform: scale(1.15) rotate(8deg);
-            box-shadow: 
-                0 12px 48px rgba(0, 0, 0, 0.35),
-                0 0 0 6px rgba(102, 126, 234, 0.25),
-                inset 0 2px 8px rgba(255, 255, 255, 0.4),
-                0 0 60px rgba(102, 126, 234, 0.3);
+        .color-input-wrapper:hover .color-input-ring {
+            opacity: 0.6;
         }
 
-        .color-picker-container input[type="color"]:active {
-            transform: scale(1.05) rotate(4deg);
+        .premium-color-container input[type="color"]:hover {
+            transform: scale(1.18) rotate(10deg);
             box-shadow: 
-                0 4px 16px rgba(0, 0, 0, 0.3),
-                0 0 0 3px rgba(102, 126, 234, 0.3);
+                0 16px 56px rgba(0, 0, 0, 0.4),
+                0 0 0 7px rgba(102, 126, 234, 0.3),
+                inset 0 4px 10px rgba(255, 255, 255, 0.5),
+                0 0 80px rgba(102, 126, 234, 0.4);
         }
 
+        .premium-color-container input[type="color"]:active {
+            transform: scale(1.08) rotate(5deg);
+            box-shadow: 
+                0 6px 24px rgba(0, 0, 0, 0.35),
+                0 0 0 4px rgba(102, 126, 234, 0.35);
+        }
+
+        .premium-color-preview,
         .color-preview {
             flex: 1;
-            min-height: 90px;
-            border-radius: 20px;
+            min-height: 100px;
+            border-radius: 22px;
             background: var(--primary-gradient);
             display: flex;
             flex-direction: column;
@@ -826,43 +1035,65 @@
             color: white;
             font-size: 1.75rem;
             font-weight: 800;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.25),
-                inset 0 2px 12px rgba(255, 255, 255, 0.2),
-                inset 0 -2px 8px rgba(0, 0, 0, 0.1);
+                0 10px 40px rgba(0, 0, 0, 0.3),
+                inset 0 3px 15px rgba(255, 255, 255, 0.25),
+                inset 0 -3px 12px rgba(0, 0, 0, 0.15),
+                0 0 0 3px rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
             cursor: pointer;
             z-index: 2;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.3);
         }
 
-        .color-preview::before {
-            content: '';
+        .color-preview-inner {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+        }
+
+        .color-hex-display {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-top: 0.5rem;
+            opacity: 0.9;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .color-preview-shine {
             position: absolute;
             top: -50%;
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-            animation: pulse 2s ease-in-out infinite;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+            z-index: 1;
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.2); opacity: 0.8; }
+            0%, 100% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.3); opacity: 0.7; }
         }
 
-        .color-preview::after {
+        .premium-color-preview::after {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            animation: shine 2s infinite;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            animation: shine 3s infinite;
+            z-index: 2;
         }
 
         @keyframes shine {
@@ -870,9 +1101,18 @@
             100% { left: 100%; }
         }
 
-        .color-preview:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3), inset 0 2px 15px rgba(255, 255, 255, 0.15);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .premium-color-preview:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 
+                0 14px 48px rgba(0, 0, 0, 0.4),
+                inset 0 4px 20px rgba(255, 255, 255, 0.3),
+                inset 0 -4px 15px rgba(0, 0, 0, 0.2),
+                0 0 0 4px rgba(255, 255, 255, 0.15);
         }
 
         .color-preview i {
@@ -974,50 +1214,60 @@
                         {% endif %}
                     </div>
 
-                    <div class="row">
+                    <div class="row premium-fields-row">
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="{{ form.priority.id_for_label }}">
+                            <div class="form-group premium-field-group">
+                                <label for="{{ form.priority.id_for_label }}" class="premium-label">
                                     <i class="fas fa-flag"></i>
-                                    Priority
+                                    <span>Priority</span>
                                 </label>
-                                <div class="priority-wrapper">
+                                <div class="priority-wrapper premium-select-wrapper">
                                     {{ form.priority }}
                                     <i class="fas fa-chevron-down priority-icon"></i>
+                                    <div class="select-highlight"></div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="{{ form.due_date.id_for_label }}">
+                            <div class="form-group premium-field-group">
+                                <label for="{{ form.due_date.id_for_label }}" class="premium-label">
                                     <i class="fas fa-calendar-alt"></i>
-                                    Due Date
+                                    <span>Due Date</span>
                                 </label>
-                                <div class="input-group-icon date-input-wrapper">
-                                    <i class="fas fa-calendar calendar-icon"></i>
+                                <div class="input-group-icon date-input-wrapper premium-date-wrapper">
+                                    <div class="date-icon-container">
+                                        <i class="fas fa-calendar calendar-icon"></i>
+                                    </div>
                                     {{ form.due_date }}
+                                    <div class="date-glow-effect"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {% if 'tags' in form.fields or 'color' in form.fields %}
-                    <div class="row">
+                    <div class="row premium-fields-row premium-special-row">
                         {% if 'tags' in form.fields %}
                         <div class="col-md-8">
-                            <div class="form-group">
-                                <label for="{{ form.tags.id_for_label }}">
+                            <div class="form-group premium-field-group">
+                                <label for="{{ form.tags.id_for_label }}" class="premium-label">
                                     <i class="fas fa-tags"></i>
-                                    Tags
+                                    <span>Tags</span>
                                 </label>
-                                <div class="tags-input-wrapper">
-                                    <div class="input-group-icon">
-                                        <i class="fas fa-hashtag"></i>
+                                <div class="tags-input-wrapper premium-tags-wrapper">
+                                    <div class="input-group-icon tags-icon-container">
+                                        <i class="fas fa-hashtag tag-icon"></i>
                                         {{ form.tags }}
+                                        <div class="tags-underline-effect"></div>
                                     </div>
-                                    <div class="tags-hint">
-                                        <i class="fas fa-lightbulb"></i>
-                                        <span>Разделите теги запятыми: work, personal, urgent</span>
+                                    <div class="tags-hint premium-hint-box">
+                                        <div class="hint-icon-wrapper">
+                                            <i class="fas fa-lightbulb"></i>
+                                        </div>
+                                        <div class="hint-content">
+                                            <strong>Совет:</strong> Разделите теги запятыми
+                                            <span class="hint-example">work, personal, urgent</span>
+                                        </div>
                                     </div>
                                 </div>
                                 {% if form.tags.help_text %}
@@ -1031,20 +1281,29 @@
                         {% endif %}
                         {% if 'color' in form.fields %}
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="{{ form.color.id_for_label }}">
+                            <div class="form-group premium-field-group">
+                                <label for="{{ form.color.id_for_label }}" class="premium-label">
                                     <i class="fas fa-palette"></i>
-                                    Color
+                                    <span>Color</span>
                                 </label>
-                                <div class="color-picker-wrapper">
-                                    <div class="color-picker-container">
+                                <div class="color-picker-wrapper premium-color-wrapper">
+                                    <div class="color-picker-container premium-color-container">
+                                        <div class="color-top-gradient"></div>
                                         <div class="color-picker-row">
-                                            {{ form.color }}
-                                            <div class="color-preview" id="colorPreview" onclick="document.querySelector('input[type=\"color\"]').click()">
-                                                <i class="fas fa-check"></i>
-                                                <div class="color-preview-text">Выбранный цвет</div>
+                                            <div class="color-input-wrapper">
+                                                {{ form.color }}
+                                                <div class="color-input-ring"></div>
+                                            </div>
+                                            <div class="color-preview premium-color-preview" id="colorPreview" onclick="document.querySelector('input[type=\"color\"]').click()">
+                                                <div class="color-preview-inner">
+                                                    <i class="fas fa-check"></i>
+                                                    <div class="color-preview-text">Выбранный цвет</div>
+                                                    <div class="color-hex-display" id="colorHexDisplay">#667EEA</div>
+                                                </div>
+                                                <div class="color-preview-shine"></div>
                                             </div>
                                         </div>
+                                        <div class="color-container-glow"></div>
                                     </div>
                                 </div>
                                 {% if form.color.help_text %}
@@ -1129,9 +1388,10 @@
                 
                 // Обновляем текст с hex-кодом
                 const hexText = color.toUpperCase();
-                const textElement = colorPreview.querySelector('.color-preview-text');
-                if (textElement) {
-                    textElement.textContent = hexText;
+                const hexDisplay = colorPreview.querySelector('#colorHexDisplay');
+                if (hexDisplay) {
+                    hexDisplay.textContent = hexText;
+                    hexDisplay.style.animation = 'fadeIn 0.5s ease';
                 }
             }
             
