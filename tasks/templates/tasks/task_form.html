@@ -350,10 +350,18 @@
                 font-size: 0.9rem;
             }
 
-            input[type="color"] {
+            .color-picker-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .color-picker-container input[type="color"] {
                 width: 100%;
-                height: 50px;
-                cursor: pointer;
+                height: 60px;
+            }
+
+            .color-preview {
+                width: 100%;
             }
         }
 
@@ -383,6 +391,175 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+        }
+
+        /* Date Input Styling */
+        .date-input-wrapper {
+            position: relative;
+        }
+
+        .date-input-wrapper .calendar-icon {
+            color: #667eea;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .date-input-wrapper .form-control:focus ~ .calendar-icon,
+        .date-input-wrapper:focus-within .calendar-icon {
+            color: #764ba2;
+            transform: scale(1.1);
+        }
+
+        /* Tags Input Styling */
+        .tags-input-wrapper {
+            position: relative;
+        }
+
+        .tags-input-wrapper .input-group-icon i {
+            color: #f59e0b;
+            font-size: 1rem;
+        }
+
+        .tags-input-wrapper .form-control:focus ~ i,
+        .tags-input-wrapper:focus-within .input-group-icon i {
+            color: #d97706;
+            transform: scale(1.1);
+        }
+
+        .tags-hint {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%);
+            border-left: 3px solid #f59e0b;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .tags-hint i {
+            color: #f59e0b;
+            font-size: 0.9rem;
+        }
+
+        [data-theme="dark"] .tags-hint {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.1) 100%);
+        }
+
+        /* Color Picker Styling */
+        .color-picker-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .color-picker-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .color-picker-container:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .color-picker-container input[type="color"] {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: none;
+            padding: 0;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .color-picker-container input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+            border: none;
+            border-radius: 12px;
+        }
+
+        .color-picker-container input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 12px;
+        }
+
+        .color-picker-container input[type="color"]::-moz-color-swatch {
+            border: none;
+            border-radius: 12px;
+        }
+
+        .color-picker-container input[type="color"]:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .color-preview {
+            flex: 1;
+            height: 60px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .color-preview i {
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+
+        .color-preview.has-color i {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .color-preview-text {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            margin-top: 0.5rem;
+            text-align: center;
+            font-weight: 500;
         }
 
         @media (max-width: 768px) {
@@ -476,8 +653,8 @@
                                     <i class="fas fa-calendar-alt"></i>
                                     Due Date
                                 </label>
-                                <div class="input-group-icon">
-                                    <i class="fas fa-clock"></i>
+                                <div class="input-group-icon date-input-wrapper">
+                                    <i class="fas fa-calendar calendar-icon"></i>
                                     {{ form.due_date }}
                                 </div>
                             </div>
@@ -493,9 +670,15 @@
                                     <i class="fas fa-tags"></i>
                                     Tags
                                 </label>
-                                <div class="input-group-icon">
-                                    <i class="fas fa-tag"></i>
-                                    {{ form.tags }}
+                                <div class="tags-input-wrapper">
+                                    <div class="input-group-icon">
+                                        <i class="fas fa-hashtag"></i>
+                                        {{ form.tags }}
+                                    </div>
+                                    <div class="tags-hint">
+                                        <i class="fas fa-lightbulb"></i>
+                                        <span>Разделите теги запятыми: work, personal, urgent</span>
+                                    </div>
                                 </div>
                                 {% if form.tags.help_text %}
                                     <div class="field-hint">
@@ -513,11 +696,13 @@
                                     <i class="fas fa-palette"></i>
                                     Color
                                 </label>
-                                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    {{ form.color }}
-                                    <span style="font-size: 0.875rem; color: var(--text-secondary);">
-                                        Optional
-                                    </span>
+                                <div class="color-picker-wrapper">
+                                    <div class="color-picker-container">
+                                        {{ form.color }}
+                                        <div class="color-preview" id="colorPreview">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                    </div>
                                 </div>
                                 {% if form.color.help_text %}
                                     <div class="field-hint">
@@ -580,6 +765,28 @@
             } else {
                 themeIcon.className = 'fas fa-moon';
                 themeText.textContent = 'Dark';
+            }
+        }
+
+        // Color picker preview update
+        const colorInput = document.querySelector('input[type="color"]');
+        const colorPreview = document.getElementById('colorPreview');
+        
+        if (colorInput && colorPreview) {
+            // Update preview on color change
+            colorInput.addEventListener('input', function() {
+                const color = this.value;
+                colorPreview.style.background = color;
+                colorPreview.classList.add('has-color');
+            });
+
+            // Set initial color if exists
+            if (colorInput.value) {
+                colorPreview.style.background = colorInput.value;
+                colorPreview.classList.add('has-color');
+            } else {
+                // Default gradient
+                colorPreview.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
             }
         }
     </script>
