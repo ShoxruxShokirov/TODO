@@ -143,12 +143,36 @@ class TaskListView(LoginRequiredMixin, ListView):
             # Get base context first
             context.update(super().get_context_data(**kwargs))
             
-            # Add form and filter data
+            # Add form and filter data - create form safely
             try:
                 context['form'] = TaskForm()
-            except Exception:
-                from .forms import TaskForm as BaseTaskForm
-                context['form'] = BaseTaskForm()
+            except Exception as form_error:
+                logger.warning(f"Error creating TaskForm: {str(form_error)}")
+                # Create minimal form without optional fields
+                from .forms import TaskForm
+                try:
+                    form = TaskForm()
+                    # Remove tags/color if they cause issues
+                    if 'tags' in form.fields:
+                        try:
+                            _ = form.fields['tags']
+                        except Exception:
+                            form.fields.pop('tags', None)
+                    if 'color' in form.fields:
+                        try:
+                            _ = form.fields['color']
+                        except Exception:
+                            form.fields.pop('color', None)
+                    context['form'] = form
+                except Exception:
+                    # If all fails, create empty form
+                    from django import forms
+                    from .models import Task
+                    class MinimalTaskForm(forms.ModelForm):
+                        class Meta:
+                            model = Task
+                            fields = ['title', 'description', 'priority', 'due_date']
+                    context['form'] = MinimalTaskForm()
                 
             context['filter_type'] = self.request.GET.get('filter', 'all')
             context['search_query'] = self.request.GET.get('search', '')
