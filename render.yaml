@@ -2,7 +2,7 @@ services:
   - type: web
     name: django-todo-app
     env: python
-    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --noinput
     startCommand: python run_server.py
     envVars:
       - key: SECRET_KEY
@@ -13,4 +13,6 @@ services:
         value: todo-nsz6.onrender.com
       - key: PYTHON_VERSION
         value: 3.11.0
+      - key: PORT
+        value: "8000"
 

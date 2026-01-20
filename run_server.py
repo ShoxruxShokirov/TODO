@@ -59,19 +59,24 @@ if __name__ == '__main__':
         print("\nFATAL ERROR: Migrations failed. Exiting...")
         sys.exit(1)
     
-    # Step 2: Collect static files (non-critical)
-    run_command(
-        'python manage.py collectstatic --noinput',
-        'Collecting static files',
-        critical=False
-    )
-    
-    # Step 3: Start Gunicorn
+    # Step 2: Start Gunicorn
     print("\n" + "=" * 50)
     print("Starting Gunicorn server...")
     print("=" * 50)
-    os.execvp('gunicorn', [
-        'gunicorn',
-        'todo_project.wsgi:application'
-    ])
+    # Get PORT from environment (Render sets this automatically)
+    port = os.environ.get('PORT', '8000')
+    print(f"Binding to port: {port}")
+    
+    # Start Gunicorn - use the simplest reliable method
+    cmd = [
+        sys.executable, '-m', 'gunicorn',
+        'todo_project.wsgi:application',
+        '--bind', f'0.0.0.0:{port}',
+        '--workers', '2',
+        '--timeout', '120',
+        '--access-logfile', '-',
+        '--error-logfile', '-'
+    ]
+    print(f"Executing: {' '.join(cmd)}")
+    os.execv(sys.executable, cmd)
 
