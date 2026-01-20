@@ -1464,12 +1464,18 @@
                         </div>
                     </div>
 
-                    <div class="premium-fields-row premium-date-tags-row" style="display: flex !important; flex-wrap: nowrap !important; gap: 1.25rem !important; width: 100% !important; margin: 0 !important;">
-                        <div class="date-field-column" style="flex: 0 0 40% !important; max-width: 40% !important; width: 40% !important; min-width: 40% !important; padding-left: 0 !important; padding-right: 0 !important; box-sizing: border-box !important;">
+                    <div class="premium-fields-row premium-date-tags-row" style="display: flex !important; flex-wrap: nowrap !important; gap: 1.25rem !important; width: 100% !important; margin: 0 !important; position: relative !important;">
+                        <!-- Индикатор соотношения 40/60 -->
+                        <div class="ratio-indicator" style="position: absolute; top: -25px; right: 10px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; z-index: 1000; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); display: none;">
+                            <i class="fas fa-ruler-combined"></i> Соотношение: <span id="widthIndicator">40% / 60%</span>
+                        </div>
+                        
+                        <div class="date-field-column" style="flex: 0 0 40% !important; max-width: 40% !important; width: 40% !important; min-width: 40% !important; padding-left: 0 !important; padding-right: 0 !important; box-sizing: border-box !important; position: relative;">
                             <div class="form-group premium-field-group">
                                 <label for="{{ form.due_date.id_for_label }}" class="premium-label">
                                     <i class="fas fa-calendar-alt"></i>
                                     <span>Due Date</span>
+                                    <span class="width-badge" style="margin-left: 8px; background: rgba(102, 126, 234, 0.2); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; color: #667eea;">40%</span>
                                 </label>
                                 <div class="input-group-icon date-input-wrapper premium-date-wrapper">
                                     <div class="date-icon-container">
@@ -1481,11 +1487,12 @@
                             </div>
                         </div>
                         {% if 'tags' in form.fields %}
-                        <div class="tags-field-column" style="flex: 0 0 60% !important; max-width: 60% !important; width: 60% !important; min-width: 60% !important; padding-left: 0 !important; padding-right: 0 !important; box-sizing: border-box !important;">
+                        <div class="tags-field-column" style="flex: 0 0 60% !important; max-width: 60% !important; width: 60% !important; min-width: 60% !important; padding-left: 0 !important; padding-right: 0 !important; box-sizing: border-box !important; position: relative;">
                             <div class="form-group premium-field-group">
                                 <label for="{{ form.tags.id_for_label }}" class="premium-label">
                                     <i class="fas fa-tags"></i>
                                     <span>Tags</span>
+                                    <span class="width-badge" style="margin-left: 8px; background: rgba(245, 158, 11, 0.2); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; color: #f59e0b;">60%</span>
                                 </label>
                                 <div class="tags-input-wrapper premium-tags-wrapper">
                                     <div class="input-group-icon tags-icon-container">
@@ -1625,7 +1632,82 @@
         // Используем MutationObserver для отслеживания изменений DOM
         const observer = new MutationObserver(function(mutations) {
             applyStyles();
+            updateWidthIndicator();
         });
+        
+        // Функция для обновления индикатора ширины
+        function updateWidthIndicator() {
+            const dateField = document.querySelector('.premium-date-tags-row .date-field-column');
+            const tagsField = document.querySelector('.premium-date-tags-row .tags-field-column');
+            const indicator = document.getElementById('widthIndicator');
+            const ratioIndicator = document.querySelector('.ratio-indicator');
+            
+            if (dateField && tagsField && indicator) {
+                const dateWidth = Math.round((dateField.offsetWidth / (dateField.offsetWidth + tagsField.offsetWidth)) * 100);
+                const tagsWidth = Math.round((tagsField.offsetWidth / (dateField.offsetWidth + tagsField.offsetWidth)) * 100);
+                
+                indicator.textContent = dateWidth + '% / ' + tagsWidth + '%';
+                
+                // Показываем индикатор
+                if (ratioIndicator) {
+                    ratioIndicator.style.display = 'block';
+                    
+                    // Анимация появления
+                    setTimeout(() => {
+                        ratioIndicator.style.opacity = '1';
+                        ratioIndicator.style.transform = 'translateY(0)';
+                    }, 100);
+                }
+                
+                // Пульсация если соотношение правильное
+                if (dateWidth >= 38 && dateWidth <= 42 && tagsWidth >= 58 && tagsWidth <= 62) {
+                    if (ratioIndicator) {
+                        ratioIndicator.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                        ratioIndicator.innerHTML = '<i class="fas fa-check-circle"></i> Соотношение: <span id="widthIndicator">' + dateWidth + '% / ' + tagsWidth + '%</span> ✓';
+                    }
+                } else {
+                    if (ratioIndicator) {
+                        ratioIndicator.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                        ratioIndicator.innerHTML = '<i class="fas fa-ruler-combined"></i> Соотношение: <span id="widthIndicator">' + dateWidth + '% / ' + tagsWidth + '%</span>';
+                    }
+                }
+            }
+        }
+        
+        // Функция для тестирования соотношения (демонстрация)
+        function testRatio() {
+            const dateField = document.querySelector('.premium-date-tags-row .date-field-column');
+            const tagsField = document.querySelector('.premium-date-tags-row .tags-field-column');
+            
+            if (dateField && tagsField) {
+                // Анимация "подсветки" полей
+                dateField.style.transition = 'all 0.5s ease';
+                tagsField.style.transition = 'all 0.5s ease';
+                
+                dateField.style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.5)';
+                tagsField.style.boxShadow = '0 0 0 3px rgba(245, 158, 11, 0.5)';
+                
+                setTimeout(() => {
+                    dateField.style.boxShadow = '';
+                    tagsField.style.boxShadow = '';
+                }, 2000);
+                
+                // Принудительно применяем стили
+                applyStyles();
+                updateWidthIndicator();
+                
+                // Показываем уведомление
+                const notification = document.createElement('div');
+                notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px 25px; border-radius: 15px; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4); z-index: 10000; animation: slideIn 0.3s ease;';
+                notification.innerHTML = '<i class="fas fa-check-circle"></i> Соотношение 40/60 применено!';
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        }
         
         // Начинаем наблюдение после загрузки
         window.addEventListener('load', function() {
@@ -1637,6 +1719,56 @@
                     childList: true,
                     subtree: true 
                 });
+                
+                // Обновляем индикатор
+                setTimeout(updateWidthIndicator, 200);
+                setTimeout(updateWidthIndicator, 500);
+                setTimeout(updateWidthIndicator, 1000);
+            }
+        });
+        
+        // Добавляем CSS для анимаций
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+            .ratio-indicator {
+                animation: slideIn 0.3s ease;
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            .width-badge {
+                animation: fadeIn 0.5s ease;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: scale(0.8); }
+                to { opacity: 1; transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Кнопка для тестирования (добавляется программно)
+        window.addEventListener('load', function() {
+            const formCard = document.querySelector('.form-card');
+            if (formCard) {
+                const testBtn = document.createElement('button');
+                testBtn.type = 'button';
+                testBtn.innerHTML = '<i class="fas fa-magic"></i> Проверить соотношение';
+                testBtn.style.cssText = 'position: absolute; top: 10px; right: 80px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.75rem; font-weight: 600; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); transition: all 0.3s ease; z-index: 100;';
+                testBtn.onmouseover = function() { this.style.transform = 'translateY(-2px)'; this.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)'; };
+                testBtn.onmouseout = function() { this.style.transform = 'translateY(0)'; this.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)'; };
+                testBtn.onclick = testRatio;
+                
+                if (formCard.style.position !== 'relative') {
+                    formCard.style.position = 'relative';
+                }
+                formCard.appendChild(testBtn);
             }
         });
 
