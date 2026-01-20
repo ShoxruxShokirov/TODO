@@ -554,7 +554,10 @@
             flex-direction: column !important;
         }
 
-        .date-field-column.col-md-5 {
+        /* Переопределяем Bootstrap классы для нашего соотношения 40/60 */
+        .premium-date-tags-row .col-md-5,
+        .premium-date-tags-row .date-field-column,
+        .premium-date-tags-row .date-field-column.col-md-5 {
             flex: 0 0 40% !important;
             max-width: 40% !important;
             width: 40% !important;
@@ -565,7 +568,9 @@
             flex-direction: column !important;
         }
 
-        .tags-field-column {
+        .premium-date-tags-row .col-md-7,
+        .premium-date-tags-row .tags-field-column,
+        .premium-date-tags-row .tags-field-column.col-md-7 {
             flex: 0 0 60% !important;
             max-width: 60% !important;
             width: 60% !important;
@@ -575,16 +580,30 @@
             display: flex !important;
             flex-direction: column !important;
         }
-
-        .tags-field-column.col-md-7 {
-            flex: 0 0 60% !important;
-            max-width: 60% !important;
-            width: 60% !important;
-            padding-left: 0 !important;
+        
+        /* Переопределяем стандартные Bootstrap стили для этих классов */
+        .premium-date-tags-row [class*="col-md"] {
+            position: relative;
+            width: 100%;
             padding-right: 0 !important;
-            box-sizing: border-box !important;
-            display: flex !important;
-            flex-direction: column !important;
+            padding-left: 0 !important;
+        }
+        
+        /* Принудительное применение 40/60 на всех экранах >= 768px */
+        @media (min-width: 768px) {
+            .premium-date-tags-row .col-md-5,
+            .premium-date-tags-row .date-field-column {
+                flex: 0 0 40% !important;
+                max-width: 40% !important;
+                width: 40% !important;
+            }
+            
+            .premium-date-tags-row .col-md-7,
+            .premium-date-tags-row .tags-field-column {
+                flex: 0 0 60% !important;
+                max-width: 60% !important;
+                width: 60% !important;
+            }
         }
 
         /* Убедимся что форма группы внутри колонок растягиваются на 100% */
@@ -612,10 +631,12 @@
                 gap: 1rem !important;
             }
 
-            .date-field-column,
-            .date-field-column.col-md-5,
-            .tags-field-column,
-            .tags-field-column.col-md-7 {
+            .premium-date-tags-row .col-md-5,
+            .premium-date-tags-row .col-md-7,
+            .premium-date-tags-row .date-field-column,
+            .premium-date-tags-row .date-field-column.col-md-5,
+            .premium-date-tags-row .tags-field-column,
+            .premium-date-tags-row .tags-field-column.col-md-7 {
                 flex: 0 0 100% !important;
                 max-width: 100% !important;
                 width: 100% !important;
