@@ -543,10 +543,25 @@
             margin-right: 0 !important;
         }
 
-        .date-field-column {
+        .date-field-column,
+        div.date-field-column {
             flex: 0 0 40% !important;
             max-width: 40% !important;
             width: 40% !important;
+            min-width: 40% !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        
+        .tags-field-column,
+        div.tags-field-column {
+            flex: 0 0 60% !important;
+            max-width: 60% !important;
+            width: 60% !important;
+            min-width: 60% !important;
             padding-left: 0 !important;
             padding-right: 0 !important;
             box-sizing: border-box !important;
@@ -584,25 +599,47 @@
         /* Переопределяем стандартные Bootstrap стили для этих классов */
         .premium-date-tags-row [class*="col-md"] {
             position: relative;
-            width: 100%;
             padding-right: 0 !important;
             padding-left: 0 !important;
+        }
+        
+        /* КРИТИЧНО: Переопределяем все возможные Bootstrap стили для col-md-5 и col-md-7 */
+        .premium-date-tags-row.row > .col-md-5,
+        .premium-date-tags-row.row > .date-field-column.col-md-5 {
+            flex: 0 0 40% !important;
+            max-width: 40% !important;
+            width: 40% !important;
+            min-width: 40% !important;
+        }
+        
+        .premium-date-tags-row.row > .col-md-7,
+        .premium-date-tags-row.row > .tags-field-column.col-md-7 {
+            flex: 0 0 60% !important;
+            max-width: 60% !important;
+            width: 60% !important;
+            min-width: 60% !important;
         }
         
         /* Принудительное применение 40/60 на всех экранах >= 768px */
         @media (min-width: 768px) {
             .premium-date-tags-row .col-md-5,
-            .premium-date-tags-row .date-field-column {
+            .premium-date-tags-row .col-md-5.date-field-column,
+            .premium-date-tags-row .date-field-column,
+            .premium-date-tags-row .date-field-column.col-md-5 {
                 flex: 0 0 40% !important;
                 max-width: 40% !important;
                 width: 40% !important;
+                min-width: 40% !important;
             }
             
             .premium-date-tags-row .col-md-7,
-            .premium-date-tags-row .tags-field-column {
+            .premium-date-tags-row .col-md-7.tags-field-column,
+            .premium-date-tags-row .tags-field-column,
+            .premium-date-tags-row .tags-field-column.col-md-7 {
                 flex: 0 0 60% !important;
                 max-width: 60% !important;
                 width: 60% !important;
+                min-width: 60% !important;
             }
         }
 
@@ -1338,6 +1375,25 @@
                 justify-content: center;
             }
         }
+        
+        /* ФИНАЛЬНОЕ ПЕРЕОПРЕДЕЛЕНИЕ Bootstrap - должно быть в конце для максимального приоритета */
+        body .premium-date-tags-row.row > div.col-md-5.date-field-column,
+        body .premium-date-tags-row.row > div.date-field-column.col-md-5,
+        body .premium-date-tags-row > div.col-md-5.date-field-column {
+            flex: 0 0 40% !important;
+            max-width: 40% !important;
+            width: 40% !important;
+            min-width: 40% !important;
+        }
+        
+        body .premium-date-tags-row.row > div.col-md-7.tags-field-column,
+        body .premium-date-tags-row.row > div.tags-field-column.col-md-7,
+        body .premium-date-tags-row > div.col-md-7.tags-field-column {
+            flex: 0 0 60% !important;
+            max-width: 60% !important;
+            width: 60% !important;
+            min-width: 60% !important;
+        }
     </style>
 </head>
 <body>
@@ -1408,8 +1464,8 @@
                         </div>
                     </div>
 
-                    <div class="row premium-fields-row premium-date-tags-row">
-                        <div class="col-md-5 date-field-column">
+                    <div class="premium-fields-row premium-date-tags-row" style="display: flex !important; flex-wrap: nowrap !important; gap: 1.25rem !important; width: 100% !important; margin: 0 !important;">
+                        <div class="date-field-column" style="flex: 0 0 40% !important; max-width: 40% !important; width: 40% !important; min-width: 40% !important; padding-left: 0 !important; padding-right: 0 !important; box-sizing: border-box !important;">
                             <div class="form-group premium-field-group">
                                 <label for="{{ form.due_date.id_for_label }}" class="premium-label">
                                     <i class="fas fa-calendar-alt"></i>
@@ -1425,7 +1481,7 @@
                             </div>
                         </div>
                         {% if 'tags' in form.fields %}
-                        <div class="col-md-7 tags-field-column">
+                        <div class="tags-field-column" style="flex: 0 0 60% !important; max-width: 60% !important; width: 60% !important; min-width: 60% !important; padding-left: 0 !important; padding-right: 0 !important; box-sizing: border-box !important;">
                             <div class="form-group premium-field-group">
                                 <label for="{{ form.tags.id_for_label }}" class="premium-label">
                                     <i class="fas fa-tags"></i>
@@ -1509,6 +1565,80 @@
                 themeText.textContent = 'Dark';
             }
         }
+        
+        // Принудительное применение соотношения 40/60 через JavaScript
+        function applyStyles() {
+            const row = document.querySelector('.premium-date-tags-row');
+            const dateField = document.querySelector('.premium-date-tags-row .date-field-column');
+            const tagsField = document.querySelector('.premium-date-tags-row .tags-field-column');
+            
+            if (row) {
+                row.style.setProperty('display', 'flex', 'important');
+                row.style.setProperty('flex-wrap', 'nowrap', 'important');
+                row.style.setProperty('gap', '1.25rem', 'important');
+                row.style.setProperty('width', '100%', 'important');
+                row.style.setProperty('margin', '0', 'important');
+                row.style.setProperty('margin-left', '0', 'important');
+                row.style.setProperty('margin-right', '0', 'important');
+                // Убираем класс row если он есть
+                row.classList.remove('row');
+            }
+            
+            if (dateField) {
+                dateField.style.setProperty('flex', '0 0 40%', 'important');
+                dateField.style.setProperty('max-width', '40%', 'important');
+                dateField.style.setProperty('width', '40%', 'important');
+                dateField.style.setProperty('min-width', '40%', 'important');
+                dateField.style.setProperty('padding-left', '0', 'important');
+                dateField.style.setProperty('padding-right', '0', 'important');
+                // Убираем Bootstrap классы
+                dateField.classList.remove('col-md-5');
+            }
+            
+            if (tagsField) {
+                tagsField.style.setProperty('flex', '0 0 60%', 'important');
+                tagsField.style.setProperty('max-width', '60%', 'important');
+                tagsField.style.setProperty('width', '60%', 'important');
+                tagsField.style.setProperty('min-width', '60%', 'important');
+                tagsField.style.setProperty('padding-left', '0', 'important');
+                tagsField.style.setProperty('padding-right', '0', 'important');
+                // Убираем Bootstrap классы
+                tagsField.classList.remove('col-md-7');
+            }
+        }
+        
+        // Применяем стили при загрузке
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', applyStyles);
+        } else {
+            applyStyles();
+        }
+        
+        // Применяем стили после полной загрузки (на случай если Bootstrap загружается позже)
+        window.addEventListener('load', function() {
+            setTimeout(applyStyles, 50);
+            setTimeout(applyStyles, 200);
+            setTimeout(applyStyles, 500);
+            setTimeout(applyStyles, 1000);
+        });
+        
+        // Используем MutationObserver для отслеживания изменений DOM
+        const observer = new MutationObserver(function(mutations) {
+            applyStyles();
+        });
+        
+        // Начинаем наблюдение после загрузки
+        window.addEventListener('load', function() {
+            const row = document.querySelector('.premium-date-tags-row');
+            if (row) {
+                observer.observe(row, { 
+                    attributes: true, 
+                    attributeFilter: ['style', 'class'],
+                    childList: true,
+                    subtree: true 
+                });
+            }
+        });
 
     </script>
 </body>
