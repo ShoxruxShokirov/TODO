@@ -144,30 +144,46 @@ class TaskListView(LoginRequiredMixin, ListView):
             context.update(super().get_context_data(**kwargs))
             
             # Add form and filter data - create form safely
+            # TaskForm and Task are already imported at the top
             try:
-                context['form'] = TaskForm()
-            except Exception as form_error:
+                # Try to create form with all features
+                # TaskForm is imported at module level, so it should be available
+                form = TaskForm()
+                # Remove tags if it causes issues
+                if 'tags' in form.fields:
+                    try:
+                        _ = form.fields['tags']
+                    except Exception:
+                        form.fields.pop('tags', None)
+                context['form'] = form
+            except (NameError, ImportError, AttributeError) as form_error:
                 logger.warning(f"Error creating TaskForm: {str(form_error)}")
-                # Create minimal form without optional fields
-                from .forms import TaskForm
+                # If TaskForm fails due to import/name issues, try to reimport
                 try:
-                    form = TaskForm()
-                    # Remove tags if it causes issues
-                    if 'tags' in form.fields:
-                        try:
-                            _ = form.fields['tags']
-                        except Exception:
-                            form.fields.pop('tags', None)
+                    # Re-import to ensure availability
+                    from .forms import TaskForm as ImportedTaskForm
+                    form = ImportedTaskForm()
                     context['form'] = form
-                except Exception:
-                    # If all fails, create empty form
-                    from django import forms
-                    from .models import Task
-                    class MinimalTaskForm(forms.ModelForm):
-                        class Meta:
-                            model = Task
-                            fields = ['title', 'description', 'priority']
-                    context['form'] = MinimalTaskForm()
+                except Exception as reimport_error:
+                    logger.warning(f"Error reimporting TaskForm: {str(reimport_error)}")
+                    # If TaskForm fails, create minimal form
+                    try:
+                        from django import forms
+                        # Task is already imported at the top, ensure it's available
+                        # Use the module-level Task import
+                        from .models import Task as TaskModel  # Use alias to avoid any conflicts
+                        class MinimalTaskForm(forms.ModelForm):
+                            class Meta:
+                                model = TaskModel
+                                fields = ['title', 'description', 'priority']
+                        context['form'] = MinimalTaskForm()
+                    except Exception as minimal_error:
+                        logger.error(f"Error creating MinimalTaskForm: {str(minimal_error)}")
+                        # Last resort: set form to None
+                        context['form'] = None
+            except Exception as form_error:
+                logger.error(f"Unexpected error creating TaskForm: {str(form_error)}", exc_info=True)
+                context['form'] = None
                 
             context['filter_type'] = self.request.GET.get('filter', 'all')
             context['search_query'] = self.request.GET.get('search', '')

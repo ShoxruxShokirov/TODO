@@ -139,6 +139,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
+# CSRF Settings (работают в любом режиме)
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'  # Более мягкая настройка для работы в разных сценариях
+CSRF_TRUSTED_ORIGINS = []  # Добавьте домены для production
+
+# Получаем домены из переменных окружения для production
+if os.getenv('CSRF_TRUSTED_ORIGINS'):
+    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.getenv('CSRF_TRUSTED_ORIGINS').split(',') if origin.strip()]
+
 # Security Settings (Senior-level)
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
@@ -149,11 +158,15 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    CSRF_COOKIE_HTTPONLY = True
+    CSRF_COOKIE_SECURE = True  # Только для HTTPS в production
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Strict'
     CSRF_COOKIE_SAMESITE = 'Strict'
+else:
+    # Для разработки - более мягкие настройки
+    CSRF_COOKIE_SECURE = False  # Разрешаем HTTP в разработке
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SAMESITE = 'Lax'  # Более мягкая настройка для разработки
 
 # Performance Settings
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
