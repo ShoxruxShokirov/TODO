@@ -462,9 +462,11 @@ def register(request):
             try:
                 with transaction.atomic():
                     user = form.save()
+                    # Убеждаемся, что пароль правильно сохранен
+                    user.refresh_from_db()
                     login(request, user)
-                messages.success(request, f'Welcome, {user.username}! Your account has been created.')
-                logger.info(f"New user registered: {user.username}")
+                messages.success(request, f'Welcome, {user.username}! Your account has been created successfully. You are now logged in.')
+                logger.info(f"New user registered: {user.username} (ID: {user.id})")
                 return redirect('task_list')
             except Exception as e:
                 logger.error(f"Error during registration: {str(e)}", exc_info=True)

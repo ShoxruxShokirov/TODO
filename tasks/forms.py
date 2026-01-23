@@ -209,6 +209,10 @@ class RegisterForm(UserCreationForm):
         username = self.cleaned_data.get('username', '').strip()
         if not username:
             raise ValidationError(_('Username cannot be empty.'))
+        # Убираем все пробелы
+        username = username.replace(' ', '')
+        if not username:
+            raise ValidationError(_('Username cannot be empty or contain only spaces.'))
         if len(username) < 3:
             raise ValidationError(_('Username must be at least 3 characters long.'))
         if not username.replace('_', '').replace('.', '').replace('-', '').isalnum():

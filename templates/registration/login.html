@@ -243,19 +243,71 @@
         {% if form.errors %}
             <div class="alert alert-danger">
                 <i class="fas fa-exclamation-circle"></i>
-                Your username and password didn't match. Please try again.
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                {% else %}
+                    {% if form.username.errors %}
+                        <strong>Username:</strong> 
+                        {% for error in form.username.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        <br>
+                    {% endif %}
+                    {% if form.password.errors %}
+                        <strong>Password:</strong> 
+                        {% for error in form.password.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        <br>
+                    {% endif %}
+                    {% if not form.username.errors and not form.password.errors %}
+                        Your username and password didn't match. Please try again.
+                        <br><small style="margin-top: 0.5rem; display: block;">
+                            <strong>Tip:</strong> Make sure you're using the exact username and password you registered with. 
+                            Username is case-sensitive. Check for any extra spaces.
+                        </small>
+                    {% endif %}
+                {% endif %}
             </div>
+        {% endif %}
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas fa-info-circle"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
         {% endif %}
 
         <form method="post">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="id_username" class="form-label">Username</label>
-                <input type="text" name="username" class="form-control" id="id_username" required autofocus>
+                <input type="text" name="username" class="form-control" id="id_username" required autofocus 
+                       value="{{ form.username.value|default:'' }}" 
+                       placeholder="Enter your username">
+                {% if form.username.errors %}
+                    <div class="text-danger small mt-1">
+                        {% for error in form.username.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
             <div class="mb-3">
                 <label for="id_password" class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" id="id_password" required>
+                <input type="password" name="password" class="form-control" id="id_password" required
+                       placeholder="Enter your password">
+                {% if form.password.errors %}
+                    <div class="text-danger small mt-1">
+                        {% for error in form.password.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-sign-in-alt"></i> Login
