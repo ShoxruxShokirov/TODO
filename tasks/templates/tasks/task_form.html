@@ -80,9 +80,47 @@
             100% { background-position: 0% 50%; }
         }
 
-        .container {
+        /* Переопределяем Bootstrap container */
+        .container,
+        body .container,
+        html .container {
             position: relative;
             z-index: 1;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 auto !important;
+        }
+        
+        /* Убираем все ограничения Bootstrap */
+        @media (min-width: 576px) {
+            .container {
+                max-width: 100% !important;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                max-width: 100% !important;
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .container {
+                max-width: 100% !important;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 100% !important;
+            }
+        }
+        
+        @media (min-width: 1400px) {
+            .container {
+                max-width: 100% !important;
+            }
         }
 
         .theme-toggle {
@@ -112,8 +150,11 @@
         }
 
         .form-wrapper {
-            max-width: 700px;
+            max-width: 100% !important;
+            width: 100% !important;
             margin: 0 auto;
+            padding: 0 !important;
+            box-sizing: border-box;
         }
 
         .form-card {
@@ -130,6 +171,9 @@
             border: 1px solid var(--border-color);
             position: relative;
             overflow: hidden;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box;
         }
 
         .form-card::before {
@@ -525,8 +569,59 @@
             filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3));
         }
 
-        /* Premium Date Input Styling - УЛУЧШЕННЫЙ */
-        /* Соотношение полей: Дата - 40%, Теги - 60% */
+        /* НОВАЯ СТРУКТУРА - 100% ширина, соотношение 40/60 */
+        .date-tags-container {
+            display: flex !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            gap: 1.25rem !important;
+            margin-top: 1.5rem !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            box-sizing: border-box !important;
+            flex-wrap: nowrap !important;
+        }
+        
+        .date-field-wrapper {
+            flex: 0 0 40% !important;
+            width: 40% !important;
+            max-width: 40% !important;
+            min-width: 40% !important;
+            box-sizing: border-box !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        
+        .tags-field-wrapper {
+            flex: 0 0 60% !important;
+            width: 60% !important;
+            max-width: 60% !important;
+            min-width: 60% !important;
+            box-sizing: border-box !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        
+        /* Убеждаемся что внутренние элементы тоже занимают 100% */
+        .date-field-wrapper .form-group,
+        .tags-field-wrapper .form-group {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        .date-field-wrapper .premium-date-wrapper,
+        .tags-field-wrapper .tags-icon-container {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        /* Старые стили для совместимости */
         .premium-date-tags-row {
             margin-top: 1.5rem !important;
             display: flex !important;
@@ -536,6 +631,17 @@
             margin-left: 0 !important;
             margin-right: 0 !important;
             width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        
+        /* Переопределяем Bootstrap row класс */
+        .premium-date-tags-row.row {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            --bs-gutter-x: 0 !important;
         }
 
         .premium-date-tags-row.row {
@@ -567,6 +673,13 @@
             box-sizing: border-box !important;
             display: flex !important;
             flex-direction: column !important;
+        }
+        
+        /* Убираем все Bootstrap отступы */
+        .premium-date-tags-row > .date-field-column,
+        .premium-date-tags-row > .tags-field-column {
+            --bs-gutter-x: 0 !important;
+            --bs-gutter-y: 0 !important;
         }
 
         /* Переопределяем Bootstrap классы для нашего соотношения 40/60 */
@@ -662,7 +775,27 @@
             flex-grow: 1 !important;
         }
 
+        .premium-date-wrapper,
+        .tags-icon-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
         @media (max-width: 768px) {
+            .date-tags-container {
+                flex-direction: column !important;
+                gap: 1rem !important;
+            }
+            
+            .date-field-wrapper,
+            .tags-field-wrapper {
+                flex: 0 0 100% !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 100% !important;
+            }
+            
             .premium-date-tags-row {
                 flex-direction: column !important;
                 gap: 1rem !important;
@@ -699,8 +832,10 @@
             min-height: 90px;
             display: flex;
             align-items: center;
-            width: 100%;
+            width: 100% !important;
+            max-width: 100% !important;
             flex-grow: 1;
+            box-sizing: border-box !important;
         }
 
         .date-icon-container {
@@ -856,8 +991,10 @@
             min-height: 90px;
             display: flex;
             align-items: center;
-            width: 100%;
+            width: 100% !important;
+            max-width: 100% !important;
             flex-grow: 1;
+            box-sizing: border-box !important;
         }
 
         .tag-icon {
@@ -1379,20 +1516,124 @@
         /* ФИНАЛЬНОЕ ПЕРЕОПРЕДЕЛЕНИЕ Bootstrap - должно быть в конце для максимального приоритета */
         body .premium-date-tags-row.row > div.col-md-5.date-field-column,
         body .premium-date-tags-row.row > div.date-field-column.col-md-5,
-        body .premium-date-tags-row > div.col-md-5.date-field-column {
+        body .premium-date-tags-row > div.col-md-5.date-field-column,
+        body .premium-date-tags-row .date-field-column {
             flex: 0 0 40% !important;
             max-width: 40% !important;
             width: 40% !important;
             min-width: 40% !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            box-sizing: border-box !important;
         }
         
         body .premium-date-tags-row.row > div.col-md-7.tags-field-column,
         body .premium-date-tags-row.row > div.tags-field-column.col-md-7,
-        body .premium-date-tags-row > div.col-md-7.tags-field-column {
+        body .premium-date-tags-row > div.col-md-7.tags-field-column,
+        body .premium-date-tags-row .tags-field-column {
             flex: 0 0 60% !important;
             max-width: 60% !important;
             width: 60% !important;
             min-width: 60% !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* КРИТИЧНО: Принудительно устанавливаем 100% ширину для всех контейнеров */
+        html body .container,
+        html body .form-wrapper,
+        html body .form-card,
+        html body .premium-date-tags-row,
+        html body .date-tags-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        html body .premium-date-tags-row,
+        html body .date-tags-container {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        
+        /* АБСОЛЮТНОЕ ПЕРЕОПРЕДЕЛЕНИЕ - максимальный приоритет */
+        html body div.container,
+        html body div.form-wrapper,
+        html body div.form-card {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        html body div.date-tags-container {
+            display: flex !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            flex-wrap: nowrap !important;
+        }
+        
+        html body div.date-field-wrapper {
+            flex: 0 0 40% !important;
+            width: 40% !important;
+            max-width: 40% !important;
+        }
+        
+        html body div.tags-field-wrapper {
+            flex: 0 0 60% !important;
+            width: 60% !important;
+            max-width: 60% !important;
+        }
+        
+        /* КРИТИЧНО: Финальное переопределение всех стилей - должно быть в самом конце */
+        body > div.container > div.form-wrapper > div.form-card > form > div.date-tags-container {
+            display: flex !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 100% !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            box-sizing: border-box !important;
+        }
+        
+        body > div.container > div.form-wrapper > div.form-card > form > div.date-tags-container > div.date-field-wrapper {
+            flex: 0 0 40% !important;
+            width: 40% !important;
+            max-width: 40% !important;
+            min-width: 40% !important;
+            box-sizing: border-box !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        
+        body > div.container > div.form-wrapper > div.form-card > form > div.date-tags-container > div.tags-field-wrapper {
+            flex: 0 0 60% !important;
+            width: 60% !important;
+            max-width: 60% !important;
+            min-width: 60% !important;
+            box-sizing: border-box !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        
+        /* Убеждаемся что внутренние элементы занимают 100% */
+        body > div.container > div.form-wrapper > div.form-card > form > div.date-tags-container > div.date-field-wrapper > div.form-group,
+        body > div.container > div.form-wrapper > div.form-card > form > div.date-tags-container > div.tags-field-wrapper > div.form-group {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        body > div.container > div.form-wrapper > div.form-card > form > div.date-tags-container > div.date-field-wrapper .premium-date-wrapper,
+        body > div.container > div.form-wrapper > div.form-card > form > div.date-tags-container > div.tags-field-wrapper .tags-icon-container {
+            width: 100% !important;
+            max-width: 100% !important;
         }
     </style>
 </head>
@@ -1402,9 +1643,9 @@
         <span id="themeText">Dark</span>
     </button>
 
-    <div class="container">
-        <div class="form-wrapper">
-            <div class="form-card">
+    <div class="container" style="width: 100% !important; max-width: 100% !important; padding: 0 !important;">
+        <div class="form-wrapper" style="width: 100% !important; max-width: 100% !important; padding: 0 !important;">
+            <div class="form-card" style="width: 100% !important; max-width: 100% !important;">
                 <div class="form-header">
                     <h2>
                         <i class="fas fa-{{ object|yesno:'edit,plus-circle' }}"></i>
@@ -1464,20 +1705,20 @@
                         </div>
                     </div>
 
-                    <div class="premium-fields-row premium-date-tags-row" style="display: flex !important; flex-wrap: nowrap !important; gap: 1.25rem !important; width: 100% !important; margin: 0 !important; position: relative !important;">
-                        <!-- Индикатор соотношения 40/60 -->
-                        <div class="ratio-indicator" style="position: absolute; top: -25px; right: 10px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; z-index: 1000; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); display: none;">
-                            <i class="fas fa-ruler-combined"></i> Соотношение: <span id="widthIndicator">40% / 60%</span>
+                    <!-- НОВАЯ СТРУКТУРА БЕЗ BOOTSTRAP - 100% ширина, соотношение 40/60 -->
+                    <div class="date-tags-container" id="dateTagsContainer" style="display: flex !important; width: 100% !important; max-width: 100% !important; gap: 1.25rem !important; margin-top: 1.5rem !important; margin-left: 0 !important; margin-right: 0 !important; padding-left: 0 !important; padding-right: 0 !important; box-sizing: border-box !important; flex-wrap: nowrap !important; position: relative;">
+                        <!-- Визуальный индикатор для отладки -->
+                        <div id="widthDebug" style="position: absolute; top: -30px; right: 10px; background: #10b981; color: white; padding: 5px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; z-index: 1000; display: block;">
+                            Ширина: <span id="containerWidth">0px</span> | Дата: <span id="dateWidth">0px</span> | Теги: <span id="tagsWidth">0px</span>
                         </div>
-                        
-                        <div class="date-field-column" style="flex: 0 0 40% !important; max-width: 40% !important; width: 40% !important; min-width: 40% !important; padding-left: 0 !important; padding-right: 0 !important; box-sizing: border-box !important; position: relative;">
-                            <div class="form-group premium-field-group">
+                        <!-- Поле даты - 40% -->
+                        <div class="date-field-wrapper" style="flex: 0 0 40% !important; width: 40% !important; max-width: 40% !important; min-width: 40% !important; box-sizing: border-box !important; padding-left: 0 !important; padding-right: 0 !important; margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="form-group premium-field-group" style="width: 100% !important; max-width: 100% !important; margin: 0 !important;">
                                 <label for="{{ form.due_date.id_for_label }}" class="premium-label">
                                     <i class="fas fa-calendar-alt"></i>
                                     <span>Due Date</span>
-                                    <span class="width-badge" style="margin-left: 8px; background: rgba(102, 126, 234, 0.2); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; color: #667eea;">40%</span>
                                 </label>
-                                <div class="input-group-icon date-input-wrapper premium-date-wrapper">
+                                <div class="input-group-icon date-input-wrapper premium-date-wrapper" style="width: 100% !important; max-width: 100% !important; box-sizing: border-box !important;">
                                     <div class="date-icon-container">
                                         <i class="fas fa-calendar calendar-icon"></i>
                                     </div>
@@ -1486,16 +1727,16 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Поле тегов - 60% -->
                         {% if 'tags' in form.fields %}
-                        <div class="tags-field-column" style="flex: 0 0 60% !important; max-width: 60% !important; width: 60% !important; min-width: 60% !important; padding-left: 0 !important; padding-right: 0 !important; box-sizing: border-box !important; position: relative;">
-                            <div class="form-group premium-field-group">
+                        <div class="tags-field-wrapper" style="flex: 0 0 60% !important; width: 60% !important; max-width: 60% !important; min-width: 60% !important; box-sizing: border-box !important; padding-left: 0 !important; padding-right: 0 !important; margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="form-group premium-field-group" style="width: 100% !important; max-width: 100% !important; margin: 0 !important;">
                                 <label for="{{ form.tags.id_for_label }}" class="premium-label">
                                     <i class="fas fa-tags"></i>
                                     <span>Tags</span>
-                                    <span class="width-badge" style="margin-left: 8px; background: rgba(245, 158, 11, 0.2); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; color: #f59e0b;">60%</span>
                                 </label>
-                                <div class="tags-input-wrapper premium-tags-wrapper">
-                                    <div class="input-group-icon tags-icon-container">
+                                <div class="tags-input-wrapper premium-tags-wrapper" style="width: 100% !important; max-width: 100% !important; box-sizing: border-box !important;">
+                                    <div class="input-group-icon tags-icon-container" style="width: 100% !important; max-width: 100% !important; box-sizing: border-box !important;">
                                         <i class="fas fa-hashtag tag-icon"></i>
                                         {{ form.tags }}
                                         <div class="tags-underline-effect"></div>
@@ -1545,6 +1786,116 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // ПРИМЕНЯЕМ СТИЛИ ДО ЗАГРУЗКИ BOOTSTRAP
+        (function() {
+            const style = document.createElement('style');
+            style.id = 'critical-styles';
+            style.textContent = `
+                .container, .form-wrapper, .form-card {
+                    width: 100% !important;
+                    max-width: 100% !important;
+                }
+                .form-wrapper {
+                    padding: 0 !important;
+                }
+                .date-tags-container {
+                    display: flex !important;
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    gap: 1.25rem !important;
+                    flex-wrap: nowrap !important;
+                }
+                .date-field-wrapper {
+                    flex: 0 0 40% !important;
+                    width: 40% !important;
+                    max-width: 40% !important;
+                }
+                .tags-field-wrapper {
+                    flex: 0 0 60% !important;
+                    width: 60% !important;
+                    max-width: 60% !important;
+                }
+            `;
+            document.head.insertBefore(style, document.head.firstChild);
+        })();
+    </script>
+    <style id="dynamic-styles">
+        /* Динамические стили, применяемые после загрузки Bootstrap - МАКСИМАЛЬНЫЙ ПРИОРИТЕТ */
+        * {
+            box-sizing: border-box;
+        }
+        
+        html body div.container,
+        html body div.container > div.form-wrapper,
+        html body div.container > div.form-wrapper > div.form-card {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 100% !important;
+        }
+        
+        html body div.container > div.form-wrapper {
+            padding: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        
+        html body div.container > div.form-wrapper > div.form-card {
+            padding-left: 3.5rem !important;
+            padding-right: 3.5rem !important;
+        }
+        
+        html body div.container > div.form-wrapper > div.form-card > form > div.date-tags-container {
+            display: flex !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 100% !important;
+            gap: 1.25rem !important;
+            margin-top: 1.5rem !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            box-sizing: border-box !important;
+            flex-wrap: nowrap !important;
+        }
+        
+        html body div.container > div.form-wrapper > div.form-card > form > div.date-tags-container > div.date-field-wrapper {
+            flex: 0 0 40% !important;
+            width: 40% !important;
+            max-width: 40% !important;
+            min-width: 40% !important;
+            box-sizing: border-box !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        
+        html body div.container > div.form-wrapper > div.form-card > form > div.date-tags-container > div.tags-field-wrapper {
+            flex: 0 0 60% !important;
+            width: 60% !important;
+            max-width: 60% !important;
+            min-width: 60% !important;
+            box-sizing: border-box !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        
+        html body div.container > div.form-wrapper > div.form-card > form > div.date-tags-container > div.date-field-wrapper > div.form-group,
+        html body div.container > div.form-wrapper > div.form-card > form > div.date-tags-container > div.tags-field-wrapper > div.form-group {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        html body div.container > div.form-wrapper > div.form-card > form > div.date-tags-container > div.date-field-wrapper .premium-date-wrapper,
+        html body div.container > div.form-wrapper > div.form-card > form > div.date-tags-container > div.tags-field-wrapper .tags-icon-container {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+    </style>
+    <script>
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
         const themeText = document.getElementById('themeText');
@@ -1575,64 +1926,240 @@
         
         // Принудительное применение соотношения 40/60 через JavaScript
         function applyStyles() {
-            const row = document.querySelector('.premium-date-tags-row');
-            const dateField = document.querySelector('.premium-date-tags-row .date-field-column');
-            const tagsField = document.querySelector('.premium-date-tags-row .tags-field-column');
+            const container = document.querySelector('.container');
+            const formWrapper = document.querySelector('.form-wrapper');
+            const formCard = document.querySelector('.form-card');
+            const dateTagsContainer = document.querySelector('.date-tags-container');
+            const dateFieldWrapper = document.querySelector('.date-field-wrapper');
+            const tagsFieldWrapper = document.querySelector('.tags-field-wrapper');
             
-            if (row) {
-                row.style.setProperty('display', 'flex', 'important');
-                row.style.setProperty('flex-wrap', 'nowrap', 'important');
-                row.style.setProperty('gap', '1.25rem', 'important');
-                row.style.setProperty('width', '100%', 'important');
-                row.style.setProperty('margin', '0', 'important');
-                row.style.setProperty('margin-left', '0', 'important');
-                row.style.setProperty('margin-right', '0', 'important');
-                // Убираем класс row если он есть
-                row.classList.remove('row');
+            // Устанавливаем 100% ширину для всех контейнеров
+            if (container) {
+                container.style.setProperty('width', '100%', 'important');
+                container.style.setProperty('max-width', '100%', 'important');
+                container.style.setProperty('padding', '0', 'important');
             }
             
-            if (dateField) {
-                dateField.style.setProperty('flex', '0 0 40%', 'important');
-                dateField.style.setProperty('max-width', '40%', 'important');
-                dateField.style.setProperty('width', '40%', 'important');
-                dateField.style.setProperty('min-width', '40%', 'important');
-                dateField.style.setProperty('padding-left', '0', 'important');
-                dateField.style.setProperty('padding-right', '0', 'important');
-                // Убираем Bootstrap классы
-                dateField.classList.remove('col-md-5');
+            if (formWrapper) {
+                formWrapper.style.setProperty('width', '100%', 'important');
+                formWrapper.style.setProperty('max-width', '100%', 'important');
+                formWrapper.style.setProperty('padding', '0', 'important');
             }
             
-            if (tagsField) {
-                tagsField.style.setProperty('flex', '0 0 60%', 'important');
-                tagsField.style.setProperty('max-width', '60%', 'important');
-                tagsField.style.setProperty('width', '60%', 'important');
-                tagsField.style.setProperty('min-width', '60%', 'important');
-                tagsField.style.setProperty('padding-left', '0', 'important');
-                tagsField.style.setProperty('padding-right', '0', 'important');
-                // Убираем Bootstrap классы
-                tagsField.classList.remove('col-md-7');
+            if (formCard) {
+                formCard.style.setProperty('width', '100%', 'important');
+                formCard.style.setProperty('max-width', '100%', 'important');
+            }
+            
+            // Новая структура - принудительно применяем стили
+            if (dateTagsContainer) {
+                dateTagsContainer.style.setProperty('display', 'flex', 'important');
+                dateTagsContainer.style.setProperty('width', '100%', 'important');
+                dateTagsContainer.style.setProperty('max-width', '100%', 'important');
+                dateTagsContainer.style.setProperty('gap', '1.25rem', 'important');
+                dateTagsContainer.style.setProperty('flex-wrap', 'nowrap', 'important');
+                dateTagsContainer.style.setProperty('margin-left', '0', 'important');
+                dateTagsContainer.style.setProperty('margin-right', '0', 'important');
+                dateTagsContainer.style.setProperty('padding-left', '0', 'important');
+                dateTagsContainer.style.setProperty('padding-right', '0', 'important');
+            }
+            
+            if (dateFieldWrapper) {
+                dateFieldWrapper.style.setProperty('flex', '0 0 40%', 'important');
+                dateFieldWrapper.style.setProperty('width', '40%', 'important');
+                dateFieldWrapper.style.setProperty('max-width', '40%', 'important');
+                dateFieldWrapper.style.setProperty('min-width', '40%', 'important');
+                dateFieldWrapper.style.setProperty('padding-left', '0', 'important');
+                dateFieldWrapper.style.setProperty('padding-right', '0', 'important');
+            }
+            
+            if (tagsFieldWrapper) {
+                tagsFieldWrapper.style.setProperty('flex', '0 0 60%', 'important');
+                tagsFieldWrapper.style.setProperty('width', '60%', 'important');
+                tagsFieldWrapper.style.setProperty('max-width', '60%', 'important');
+                tagsFieldWrapper.style.setProperty('min-width', '60%', 'important');
+                tagsFieldWrapper.style.setProperty('padding-left', '0', 'important');
+                tagsFieldWrapper.style.setProperty('padding-right', '0', 'important');
+            }
+            
+            // Убеждаемся что внутренние элементы тоже занимают 100%
+            const dateWrapper = dateFieldWrapper?.querySelector('.premium-date-wrapper');
+            const tagsContainer = tagsFieldWrapper?.querySelector('.tags-icon-container');
+            
+            if (dateWrapper) {
+                dateWrapper.style.setProperty('width', '100%', 'important');
+                dateWrapper.style.setProperty('max-width', '100%', 'important');
+            }
+            
+            if (tagsContainer) {
+                tagsContainer.style.setProperty('width', '100%', 'important');
+                tagsContainer.style.setProperty('max-width', '100%', 'important');
             }
         }
         
+        // Функция для принудительного применения стилей
+        function forceApplyStyles() {
+            // Применяем стили ко всем контейнерам
+            const containers = [
+                '.container',
+                '.form-wrapper', 
+                '.form-card',
+                '.date-tags-container',
+                '.date-field-wrapper',
+                '.tags-field-wrapper'
+            ];
+            
+            containers.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    if (selector === '.container' || selector === '.form-wrapper' || selector === '.form-card') {
+                        el.style.setProperty('width', '100%', 'important');
+                        el.style.setProperty('max-width', '100%', 'important');
+                        if (selector === '.form-wrapper') {
+                            el.style.setProperty('padding', '0', 'important');
+                        }
+                    } else if (selector === '.date-tags-container') {
+                        el.style.setProperty('display', 'flex', 'important');
+                        el.style.setProperty('width', '100%', 'important');
+                        el.style.setProperty('max-width', '100%', 'important');
+                        el.style.setProperty('gap', '1.25rem', 'important');
+                        el.style.setProperty('flex-wrap', 'nowrap', 'important');
+                        el.style.setProperty('margin-left', '0', 'important');
+                        el.style.setProperty('margin-right', '0', 'important');
+                        el.style.setProperty('padding-left', '0', 'important');
+                        el.style.setProperty('padding-right', '0', 'important');
+                    } else if (selector === '.date-field-wrapper') {
+                        el.style.setProperty('flex', '0 0 40%', 'important');
+                        el.style.setProperty('width', '40%', 'important');
+                        el.style.setProperty('max-width', '40%', 'important');
+                        el.style.setProperty('min-width', '40%', 'important');
+                        el.style.setProperty('padding-left', '0', 'important');
+                        el.style.setProperty('padding-right', '0', 'important');
+                    } else if (selector === '.tags-field-wrapper') {
+                        el.style.setProperty('flex', '0 0 60%', 'important');
+                        el.style.setProperty('width', '60%', 'important');
+                        el.style.setProperty('max-width', '60%', 'important');
+                        el.style.setProperty('min-width', '60%', 'important');
+                        el.style.setProperty('padding-left', '0', 'important');
+                        el.style.setProperty('padding-right', '0', 'important');
+                    }
+                });
+            });
+            
+            // Обновляем индикатор ширины для отладки
+            updateWidthDebug();
+        }
+        
+        // Функция для обновления индикатора ширины (отладка)
+        function updateWidthDebug() {
+            const container = document.getElementById('dateTagsContainer');
+            const dateField = document.querySelector('.date-field-wrapper');
+            const tagsField = document.querySelector('.tags-field-wrapper');
+            const debugDiv = document.getElementById('widthDebug');
+            const containerWidthSpan = document.getElementById('containerWidth');
+            const dateWidthSpan = document.getElementById('dateWidth');
+            const tagsWidthSpan = document.getElementById('tagsWidth');
+            
+            const formCard = document.querySelector('.form-card');
+            const formWrapper = document.querySelector('.form-wrapper');
+            const mainContainer = document.querySelector('.container');
+            
+            if (container && dateField && tagsField && debugDiv) {
+                const containerWidth = container.offsetWidth;
+                const dateWidth = dateField.offsetWidth;
+                const tagsWidth = tagsField.offsetWidth;
+                const formCardWidth = formCard ? formCard.offsetWidth : 0;
+                const formWrapperWidth = formWrapper ? formWrapper.offsetWidth : 0;
+                const mainContainerWidth = mainContainer ? mainContainer.offsetWidth : 0;
+                
+                if (containerWidthSpan) {
+                    containerWidthSpan.textContent = containerWidth + 'px (Card: ' + formCardWidth + 'px, Wrapper: ' + formWrapperWidth + 'px, Container: ' + mainContainerWidth + 'px)';
+                }
+                if (dateWidthSpan) {
+                    const datePercent = containerWidth > 0 ? Math.round((dateWidth / containerWidth) * 100) : 0;
+                    dateWidthSpan.textContent = dateWidth + 'px (' + datePercent + '%)';
+                }
+                if (tagsWidthSpan) {
+                    const tagsPercent = containerWidth > 0 ? Math.round((tagsWidth / containerWidth) * 100) : 0;
+                    tagsWidthSpan.textContent = tagsWidth + 'px (' + tagsPercent + '%)';
+                }
+                
+                // Показываем индикатор
+                debugDiv.style.display = 'block';
+                
+                // Выводим в консоль для отладки
+                console.log('=== ОТЛАДКА ШИРИНЫ ===');
+                console.log('Container:', mainContainerWidth + 'px');
+                console.log('Form Wrapper:', formWrapperWidth + 'px');
+                console.log('Form Card:', formCardWidth + 'px');
+                console.log('Date-Tags Container:', containerWidth + 'px');
+                console.log('Date Field:', dateWidth + 'px (' + Math.round((dateWidth / containerWidth) * 100) + '%)');
+                console.log('Tags Field:', tagsWidth + 'px (' + Math.round((tagsWidth / containerWidth) * 100) + '%)');
+                console.log('========================');
+            }
+        }
+        
+        // Применяем стили немедленно
+        applyStyles();
+        forceApplyStyles();
+        
         // Применяем стили при загрузке
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', applyStyles);
+            document.addEventListener('DOMContentLoaded', function() {
+                applyStyles();
+                forceApplyStyles();
+            });
         } else {
             applyStyles();
+            forceApplyStyles();
         }
         
         // Применяем стили после полной загрузки (на случай если Bootstrap загружается позже)
         window.addEventListener('load', function() {
-            setTimeout(applyStyles, 50);
-            setTimeout(applyStyles, 200);
-            setTimeout(applyStyles, 500);
-            setTimeout(applyStyles, 1000);
+            applyStyles();
+            forceApplyStyles();
+            updateWidthDebug();
+            // Применяем несколько раз с задержками
+            setTimeout(() => { applyStyles(); forceApplyStyles(); updateWidthDebug(); }, 10);
+            setTimeout(() => { applyStyles(); forceApplyStyles(); updateWidthDebug(); }, 50);
+            setTimeout(() => { applyStyles(); forceApplyStyles(); updateWidthDebug(); }, 100);
+            setTimeout(() => { applyStyles(); forceApplyStyles(); updateWidthDebug(); }, 200);
+            setTimeout(() => { applyStyles(); forceApplyStyles(); updateWidthDebug(); }, 500);
+            setTimeout(() => { applyStyles(); forceApplyStyles(); updateWidthDebug(); }, 1000);
+        });
+        
+        // Применяем стили при изменении размера окна
+        window.addEventListener('resize', function() {
+            setTimeout(() => { applyStyles(); forceApplyStyles(); }, 100);
         });
         
         // Используем MutationObserver для отслеживания изменений DOM
-        const observer = new MutationObserver(function(mutations) {
+        const styleObserver = new MutationObserver(function(mutations) {
             applyStyles();
-            updateWidthIndicator();
+            forceApplyStyles();
+            updateWidthDebug();
+        });
+        
+        // Начинаем наблюдение после загрузки
+        window.addEventListener('load', function() {
+            const dateTagsContainer = document.querySelector('.date-tags-container');
+            if (dateTagsContainer) {
+                styleObserver.observe(dateTagsContainer, { 
+                    attributes: true, 
+                    attributeFilter: ['style', 'class'],
+                    childList: true,
+                    subtree: true 
+                });
+            }
+            // Также наблюдаем за контейнерами
+            const container = document.querySelector('.container');
+            const formWrapper = document.querySelector('.form-wrapper');
+            if (container) {
+                styleObserver.observe(container, { attributes: true, attributeFilter: ['style', 'class'] });
+            }
+            if (formWrapper) {
+                styleObserver.observe(formWrapper, { attributes: true, attributeFilter: ['style', 'class'] });
+            }
         });
         
         // Функция для обновления индикатора ширины
